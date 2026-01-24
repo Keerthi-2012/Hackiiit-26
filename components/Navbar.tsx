@@ -23,9 +23,13 @@ import {
   Article as ArticleIcon,
   Edit as EditIcon,
   Person as PersonIcon,
+  HelpOutline as HelpOutlineIcon,
 } from "@mui/icons-material";
 
+
 const navItems = [
+  { label: "Home", href: "/dashboard", icon: DashboardIcon },
+    { label: "FAQ", href: "/faq", icon: HelpOutlineIcon },
   { label: "Blogs", href: "/blogs", icon: ArticleIcon },
   { label: "Profile", href: "/profile", icon: PersonIcon },
 ];
@@ -112,7 +116,6 @@ export default function Navbar() {
           }}
         >
           {/* Logo */}
-          <Link href="/" style={{ textDecoration: "none" }}>
             <Typography
               variant="h6"
               sx={{
@@ -132,7 +135,6 @@ export default function Navbar() {
             >
               Research Discuss
             </Typography>
-          </Link>
 
           {/* Desktop Navigation */}
           <Box

@@ -13,10 +13,7 @@
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",
-<<<<<<< HEAD
     "@mui/system": "^7.3.7",
-=======
->>>>>>> 36a473bec7b89011da50bf031c5da058c0579e39
     "axios": "^1.13.2",
     "dotenv": "^17.2.3",
     "formidable": "^3.5.4",
