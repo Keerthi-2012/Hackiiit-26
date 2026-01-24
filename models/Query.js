@@ -1,18 +1,5 @@
+import FileSchema from "../models/File"
 import mongoose from "mongoose";
-
-const FileSchema = new mongoose.Schema({
-  filename: { type: String, required: true },
-  url: { type: String, required: true },
-  fileType: { type: String },  // e.g., "image", "pdf", "docx"
-  uploadedAt: { type: Date, default: Date.now }
-});
-
-const ReplySchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  text: String,
-  files: [FileSchema],       // <-- files attached to reply
-  createdAt: { type: Date, default: Date.now }
-}, { collection: "Reply" });
 
 const QuerySchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -20,7 +7,6 @@ const QuerySchema = new mongoose.Schema({
   description: String,
   tags: [{ type: String }],
   files: [FileSchema],
-  replies: [ReplySchema],
   isAnonymous: { type: Boolean, default: false }, // <-- new field
   createdAt: { type: Date, default: Date.now }
 },{ collection: "Query" });

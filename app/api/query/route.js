@@ -57,23 +57,36 @@ export async function POST(request) {
 }
 
 // GET endpoint to fetch all queries for dashboard
+import Reply from "@/models/Reply";
+
 export async function GET() {
   await connectToDatabase();
+
   try {
+    // 1️⃣ Fetch all queries
     const queries = await Query.find()
       .populate("user", "userName")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .lean();
 
-    const formattedQueries = queries.map((q) => ({
-      id: q._id,
-      title: q.title,
-      description: q.description,
-      tags: q.tags,
-      files: q.files,
-      createdAt: q.createdAt,
-      replies: q.replies,
-      userName: q.isAnonymous ? "Anonymous" : q.user.userName,
-    }));
+    // 2️⃣ Fetch all replies
+    const allReplies = await Reply.find().lean();
+
+    // 3️⃣ Count replies per query
+    const formattedQueries = queries.map(q => {
+      const replyCount = allReplies.filter(r => r.query.toString() === q._id.toString()).length;
+
+      return {
+        id: q._id,
+        title: q.title,
+        description: q.description,
+        tags: q.tags,
+        files: q.files,
+        createdAt: q.createdAt,
+        userName: q.isAnonymous ? "Anonymous" : q.user.userName,
+        replyCount, // number of replies
+      };
+    });
 
     return NextResponse.json(formattedQueries, { status: 200 });
   } catch (err) {
