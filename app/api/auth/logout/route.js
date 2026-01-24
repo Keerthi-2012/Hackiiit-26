@@ -1,20 +1,11 @@
 import { NextResponse } from "next/server";
 
-export async function GET(req) {
-  // Redirect to CAS logout, then back to homepage
-  const casLogoutUrl = `${process.env.CAS_BASE_URL}/logout?service=${encodeURIComponent(
-    new URL("/", req.url).toString()
-  )}`;
+export async function GET() {
+  const res = NextResponse.redirect(
+    "https://login.iiit.ac.in/cas/logout"
+  );
 
-  const res = NextResponse.redirect(casLogoutUrl);
-
-  // Clear local JWT cookie
-  res.cookies.set("token", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 0,
-  });
+  res.cookies.set("token", "", { maxAge: 0, path: "/" });
 
   return res;
 }
