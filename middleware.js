@@ -17,6 +17,6 @@ export function middleware(req) {
 }
 
 export const config = {
-  matcher: ["/query/:path*", "/api/protected/:path*"]
-
+  matcher: ["/api/protected/:path*"],
 };
+
