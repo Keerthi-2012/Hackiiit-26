@@ -1,5 +1,5 @@
-"use client";
 
+"use client";
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -16,11 +16,12 @@ import {
   Typography,
   Container,
 } from "@mui/material";
-
 import {
   Menu as MenuIcon,
   Close as CloseIcon,
+  Dashboard as DashboardIcon,
   Article as ArticleIcon,
+  Edit as EditIcon,
   Person as PersonIcon,
   HelpOutline as HelpOutlineIcon,
 } from "@mui/icons-material";
@@ -30,7 +31,6 @@ const navItems = [
   { label: "Home", href: "/dashboard", icon: DashboardIcon },
     { label: "FAQ", href: "/faq", icon: HelpOutlineIcon },
   { label: "Blogs", href: "/blogs", icon: ArticleIcon },
-  { label: "FAQ", href: "/faq", icon: HelpOutlineIcon }, // ✅ ADDED
   { label: "Profile", href: "/profile", icon: PersonIcon },
 ];
 
@@ -42,7 +42,12 @@ export default function Navbar() {
   };
 
   const drawer = (
-    <Box sx={{ textAlign: "center", p: 2 }}>
+    <Box
+      sx={{
+        textAlign: "center",
+        p: 2,
+      }}
+    >
       <IconButton
         onClick={handleDrawerToggle}
         sx={{
@@ -54,7 +59,6 @@ export default function Navbar() {
       >
         <CloseIcon />
       </IconButton>
-
       <List>
         {navItems.map((item) => {
           const IconComponent = item.icon;
@@ -143,11 +147,7 @@ export default function Navbar() {
             {navItems.map((item) => {
               const IconComponent = item.icon;
               return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  style={{ textDecoration: "none" }}
-                >
+                <Link key={item.href} href={item.href} style={{ textDecoration: "none" }}>
                   <Button
                     sx={{
                       textTransform: "none",
@@ -169,8 +169,7 @@ export default function Navbar() {
                         left: 0,
                         right: 0,
                         height: "2px",
-                        background:
-                          "linear-gradient(90deg, #2196F3 0%, #1976D2 100%)",
+                        background: "linear-gradient(90deg, #2196F3 0%, #1976D2 100%)",
                         transform: "scaleX(0)",
                         transition: "transform 0.3s ease",
                         transformOrigin: "right",
@@ -193,8 +192,11 @@ export default function Navbar() {
             })}
           </Box>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Navigation Toggle */}
           <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
             onClick={handleDrawerToggle}
             sx={{
               display: { xs: "block", md: "none" },
@@ -217,6 +219,7 @@ export default function Navbar() {
         sx={{
           display: { xs: "block", md: "none" },
           "& .MuiDrawer-paper": {
+            boxSizing: "border-box",
             backgroundColor: "#FAFAFA",
             borderBottom: "1px solid #E0E0E0",
           },
