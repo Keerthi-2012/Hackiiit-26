@@ -36,7 +36,8 @@ export async function GET(req) {
     role: user.role,
   });
 
-  const res = NextResponse.redirect("/");
+  const res = NextResponse.redirect(new URL("/", req.url));
+
   res.cookies.set("token", token, {
     httpOnly: true,
     secure: true,
