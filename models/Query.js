@@ -12,7 +12,7 @@ const ReplySchema = new mongoose.Schema({
   text: String,
   files: [FileSchema],       // <-- files attached to reply
   createdAt: { type: Date, default: Date.now }
-});
+}, { collection: "Reply" });
 
 const QuerySchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -22,6 +22,6 @@ const QuerySchema = new mongoose.Schema({
   files: [FileSchema],       // <-- files attached to query
   replies: [ReplySchema],
   createdAt: { type: Date, default: Date.now }
-});
+},{ collection: "Query" });
 
 export default mongoose.models.Query || mongoose.model("Query", QuerySchema);
