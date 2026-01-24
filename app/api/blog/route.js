@@ -1,18 +1,32 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Blog from "@/models/Blog";
+import { cookies } from "next/headers";
 
 export async function GET(req) {
   try {
     await connectToDatabase();
 
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
 
+    if (!token) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch {
+      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+    }
+
+    const userId = decoded.userId;
+
+    console.log(userId)
     if (!userId) {
       return NextResponse.json({ message: "userId required" }, { status: 400 });
     }
-
     const Blogs = await Blog.find({ user: userId })
       .sort({ createdAt: -1 }); // newest first
 
