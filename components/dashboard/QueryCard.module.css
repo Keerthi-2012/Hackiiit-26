@@ -1,0 +1,20 @@
+.card {
+  display: block;
+  background: white;
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px;
+}
+
+.card:hover {
+  background: #fafafa;
+}
+
+.meta {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
+  display: flex;
+  justify-content: space-between;
+}
