@@ -4,55 +4,19 @@ import User from "@/models/User";
 import connectToDatabase from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
-export async function GET(request) { // returns all the questions asked by user
+export async function GET(request) {
   await connectToDatabase();
 
   try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
+    const cookieStore = await cookies();
+    const token = cookieStore.get("token")?.value;
 
-    if (!userId) {
-      return NextResponse.json({ error: "userId is required" }, { status: 400 });
+    if (!token) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    // 1️⃣ Fetch all queries by this user
-    const queries = await Query.find({ user: userId })
-      .populate("user", "userName")
-      .sort({ createdAt: -1 })
-      .lean();
-
-    // 2️⃣ Fetch all replies for these queries
-    const queryIds = queries.map(q => q._id.toString());
-    const allReplies = await Reply.find({ query: { $in: queryIds } }).lean();
-
-    // 3️⃣ Attach reply count to each query
-    const formattedQueries = queries.map(q => {
-      const replyCount = allReplies.filter(r => r.query.toString() === q._id.toString()).length;
-
-      return {
-        id: q._id,
-        title: q.title,
-        description: q.description,
-        tags: q.tags,
-        files: q.files,
-        createdAt: q.createdAt,
-        userName: q.isAnonymous ? "Anonymous" : q.user.userName,
-        replyCount,
-      };
-    });
-
-    return NextResponse.json(formattedQueries, { status: 200 });
-  } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Failed to fetch user queries" }, { status: 500 });
-  }
-}
-export async function POST(request) {
-  await connectToDatabase();
-
-  try {
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.userId;
 
     if (!userId) {
       return NextResponse.json({ error: "userId is required" }, { status: 400 });
