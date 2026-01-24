@@ -38,7 +38,7 @@ export default async function QueryPage({
 }: {
   params: Promise<{ queryId: string }>;
 }) {
-  // ✅ FIX: await params
+  // ✅ REQUIRED in Next.js 15+
   const { queryId } = await params;
 
   const query = MOCK_QUERIES.find((q) => q.id === queryId);
@@ -57,9 +57,7 @@ export default async function QueryPage({
       />
 
       <QueryBody description={query.description} />
-
       <AttachmentViewer attachments={query.attachments} />
-
       <Discussion comments={query.comments} />
     </div>
   );

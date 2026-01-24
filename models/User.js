@@ -5,6 +5,9 @@ const UserSchema = new mongoose.Schema({
   name: { type: String, required: true },
   researchArea: { type: String },
   lab: { type: String }
-}, { timestamps: true });
+}, { 
+  timestamps: true,   // enable createdAt/updatedAt
+  collection: "User"  // force collection name to "User"
+});
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

@@ -36,13 +36,17 @@ export async function GET(req) {
     role: user.role,
   });
 
-  const res = NextResponse.redirect(new URL("/", req.url));
+  const res = NextResponse.redirect(new URL("/dashboard", req.url));
 
-  res.cookies.set("token", token, {
-    httpOnly: true,
-    secure: true,
-    path: "/",
-  });
+
+res.cookies.set("token", token, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: "lax",
+  path: "/",
+});
+
+
 
   return res;
 }

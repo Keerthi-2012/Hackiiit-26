@@ -13,7 +13,7 @@ const BlogSchema = new mongoose.Schema({
   content: { type: String, required: true },
   files: [FileSchema],       // Optional file attachments
   createdAt: { type: Date, default: Date.now }
-});
+}, { collection: "Blog" });
 
 const Blog = mongoose.models.Blog || mongoose.model("Blog", BlogSchema);
 
