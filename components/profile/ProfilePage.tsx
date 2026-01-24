@@ -119,7 +119,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import WorkIcon from '@mui/icons-material/Work';
 import LabelIcon from '@mui/icons-material/Label';
 import EditProfileModal from './EditProfileModal';
-
+import { useRouter } from "next/navigation";
 type User = {
   name: string;
   email: string;
@@ -134,6 +134,8 @@ interface ProfileStats {
 }
 
 export default function ProfilePage() {
+  
+  const router = useRouter();
   const [showEdit, setShowEdit] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -490,6 +492,9 @@ export default function ProfilePage() {
                   borderColor: '#667eea',
                 },
               }}
+            onClick={() => {
+              router.push("/profile/my-queries");
+              }}
             >
               My Queries
             </Button>
@@ -510,6 +515,9 @@ export default function ProfilePage() {
                   borderColor: '#388e3c',
                 },
               }}
+            onClick={() => {
+              router.push("/profile/answered");
+              }}
             >
               Answered
             </Button>
@@ -529,6 +537,9 @@ export default function ProfilePage() {
                   backgroundColor: 'rgba(245, 124, 0, 0.08)',
                   borderColor: '#f57c00',
                 },
+              }}
+              onClick={() => {
+              router.push("/profile/blogs");
               }}
             >
               My Blogs

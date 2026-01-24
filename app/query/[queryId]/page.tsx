@@ -12,7 +12,7 @@ export default async function QueryPage({
 }: {
   params: { queryId: string };
 }) {
-  // ✅ FIX: await cookies()
+  /* 🔐 Auth check */
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
@@ -26,19 +26,32 @@ export default async function QueryPage({
 
   const { queryId } = params;
 
-  // mock lookup / DB fetch later
+  /* 📡 Fetch query details from backend */
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/query/details?queryId=${queryId}`,
+    { cache: "no-store" }
+  );
+
+  if (!res.ok) {
+    return <div className="p-6">Query not found</div>;
+  }
+
+  const query = await res.json();
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
       <QueryHeader
-        title={`Query ${queryId}`}
-        author="Anonymous"
-        tags={["Systems"]}
-        queryId={queryId}
+        title={query.title}
+        author={query.author}
+        tags={query.tags}
+        queryId={query._id}
       />
 
-      <QueryBody description="Query body goes here" />
-      <AttachmentViewer attachments={[]} />
-      <Discussion comments={[]} />
+      <QueryBody description={query.description} />
+
+      <AttachmentViewer attachments={query.files || []} />
+
+      <Discussion comments={query.replies || []} />
     </div>
   );
 }

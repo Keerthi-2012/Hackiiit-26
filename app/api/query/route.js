@@ -1,96 +1,140 @@
 import { NextResponse } from "next/server";
-import Query from "@/models/Query";
 import connectToDatabase from "@/lib/mongodb";
+import Query from "@/models/Query";
+import Reply from "@/models/Reply";
+import jwt from "jsonwebtoken";
 import fs from "fs";
 import path from "path";
-import User from "@/models/User"; // <-- important!
 
+/* =========================
+   🔐 Extract userId from JWT (API-safe)
+========================= */
+function getUserIdFromRequest(request) {
+  const token = request.cookies.get("token")?.value;
+  if (!token) return null;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return decoded.userId;
+  } catch {
+    return null;
+  }
+}
+
+/* =========================
+   📝 POST: Create a new query
+========================= */
 export async function POST(request) {
   await connectToDatabase();
 
   try {
-    const formData = await request.formData();
+    // ✅ userId from JWT cookie
+    const userId = getUserIdFromRequest(request);
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized: user missing" },
+        { status: 401 }
+      );
+    }
 
+    const formData = await request.formData();
     const title = formData.get("title");
     const description = formData.get("description");
     const tags = formData.get("tags");
-    const userId = formData.get("userId");
     const isAnonymous = formData.get("isAnonymous") === "true";
 
-    // Handle files
+    if (!title || !description) {
+      return NextResponse.json(
+        { error: "Title and description required" },
+        { status: 400 }
+      );
+    }
+
+    /* 📎 Handle file uploads safely */
     const uploadedFiles = [];
     for (const [key, value] of formData.entries()) {
-      if (key === "files" && value instanceof File) {
-        const fileBuffer = Buffer.from(await value.arrayBuffer());
-        const uploadDir = path.join(process.cwd(), "/public/uploads");
+      if (
+        key === "files" &&
+        value &&
+        value.name &&
+        value.size > 0
+      ) {
+        const buffer = Buffer.from(await value.arrayBuffer());
+        const uploadDir = path.join(process.cwd(), "public/uploads");
         fs.mkdirSync(uploadDir, { recursive: true });
 
-        const filename = Date.now() + "-" + value.name;
-        const filepath = path.join(uploadDir, filename);
-
-        fs.writeFileSync(filepath, fileBuffer);
+        const filename = `${Date.now()}-${value.name}`;
+        fs.writeFileSync(path.join(uploadDir, filename), buffer);
 
         uploadedFiles.push({
           filename: value.name,
-          url: "/uploads/" + filename,
+          url: `/uploads/${filename}`,
           fileType: path.extname(value.name).substring(1),
           uploadedAt: new Date(),
         });
       }
     }
 
-    // Create query in MongoDB
-    const newQuery = await Query.create({
-      user: userId,
+    /* 🗃️ Create query */
+    const query = await Query.create({
+      user: userId,              // ✅ CONSISTENT WITH USER._id
       title,
       description,
-      tags: tags ? tags.split(",").map(tag => tag.trim()) : [],
+      tags: tags ? tags.split(",").map(t => t.trim()) : [],
       files: uploadedFiles,
       isAnonymous,
     });
 
-    return NextResponse.json(newQuery, { status: 201 });
+    return NextResponse.json(
+      { queryId: query._id },
+      { status: 201 }
+    );
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Failed to create query" }, { status: 500 });
+    console.error("CREATE QUERY ERROR:", err);
+    return NextResponse.json(
+      { error: err.message },
+      { status: 500 }
+    );
   }
 }
 
-// GET endpoint to fetch all queries for dashboard
-import Reply from "@/models/Reply";
-
+/* =========================
+   📄 GET: Fetch all queries (dashboard)
+========================= */
 export async function GET() {
   await connectToDatabase();
 
   try {
-    // 1️⃣ Fetch all queries
     const queries = await Query.find()
-      .populate("user", "userName")
+      .populate("user", "name")   // ✅ correct field
       .sort({ createdAt: -1 })
       .lean();
 
-    // 2️⃣ Fetch all replies
-    const allReplies = await Reply.find().lean();
+    const replies = await Reply.find().lean();
 
-    // 3️⃣ Count replies per query
-    const formattedQueries = queries.map(q => {
-      const replyCount = allReplies.filter(r => r.query.toString() === q._id.toString()).length;
+    const formatted = queries.map(q => {
+      const replyCount = replies.filter(
+        r => r.query.toString() === q._id.toString()
+      ).length;
 
       return {
-        id: q._id,
+        _id: q._id,               // ✅ MongoDB ID
         title: q.title,
         description: q.description,
         tags: q.tags,
         files: q.files,
         createdAt: q.createdAt,
-        userName: q.isAnonymous ? "Anonymous" : q.user.userName,
-        replyCount, // number of replies
+        replyCount,
+        author: q.isAnonymous ? "Anonymous" : q.user?.name,
       };
     });
 
-    return NextResponse.json(formattedQueries, { status: 200 });
+    return NextResponse.json(formatted, { status: 200 });
   } catch (err) {
-    console.error(err);
-    return NextResponse.json({ error: "Failed to fetch queries" }, { status: 500 });
+    console.error("FETCH QUERY ERROR:", err);
+    return NextResponse.json(
+      { error: "Failed to fetch queries" },
+      { status: 500 }
+    );
   }
 }
