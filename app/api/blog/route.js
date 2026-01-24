@@ -1,63 +1,95 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Blog from "@/models/Blog";
-import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 
-export async function GET(req) {
+/* =========================
+   🔐 Get userId from cookie
+========================= */
+function getUserId(request) {
+  const token = request.cookies.get("token")?.value;
+  if (!token) return null;
+
   try {
-    await connectToDatabase();
-
-    const cookieStore = await cookies();
-    const token = cookieStore.get("token")?.value;
-
-    if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    let decoded;
-    try {
-      decoded = jwt.verify(token, process.env.JWT_SECRET);
-    } catch {
-      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
-    }
-
-    const userId = decoded.userId;
-
-    console.log(userId)
-    if (!userId) {
-      return NextResponse.json({ message: "userId required" }, { status: 400 });
-    }
-    const Blogs = await Blog.find({ user: userId })
-      .sort({ createdAt: -1 }); // newest first
-
-    return NextResponse.json({ Blogs });
-  } catch (err) {
-    console.error("GET /api/blog error:", err);
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return decoded.userId;
+  } catch {
+    return null;
   }
 }
 
-export async function POST(req) {
+/* =========================
+   📄 GET: My blogs
+========================= */
+export async function GET(request) {
+  await connectToDatabase();
+
   try {
-    await connectToDatabase();
-
-    const body = await req.json();
-    const { user, title, content, files } = body;
-
-    if (!user || !title || !content) {
-      return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
+    const userId = getUserId(request);
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
-    const newBlog = await Blog.create({
-      user,
+    const blogs = await Blog.find({ author: userId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const formatted = blogs.map((b) => ({
+      id: b._id,
+      title: b.title,
+      summary: b.summary || b.content.slice(0, 120) + "...",
+      createdAt: b.createdAt.toDateString(),
+    }));
+
+    return NextResponse.json(formatted);
+  } catch (err) {
+    console.error("BLOG GET ERROR:", err);
+    return NextResponse.json(
+      { error: "Failed to fetch blogs" },
+      { status: 500 }
+    );
+  }
+}
+
+/* =========================
+   📝 POST: Add blog
+========================= */
+export async function POST(request) {
+  await connectToDatabase();
+
+  try {
+    const userId = getUserId(request);
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const { title, content } = await request.json();
+    if (!title || !content) {
+      return NextResponse.json(
+        { error: "Title and content required" },
+        { status: 400 }
+      );
+    }
+
+    await Blog.create({
+      author: userId,
       title,
       content,
-      files: files || [],
+      summary: content.slice(0, 120),
     });
 
-    return NextResponse.json({ message: "Blog created", Blog: newBlog }, { status: 201 });
+    return NextResponse.json({ success: true });
   } catch (err) {
-    console.error("POST /api/blog error:", err);
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+    console.error("BLOG POST ERROR:", err);
+    return NextResponse.json(
+      { error: "Failed to create blog" },
+      { status: 500 }
+    );
   }
 }
