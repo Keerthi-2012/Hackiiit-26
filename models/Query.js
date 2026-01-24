@@ -18,9 +18,10 @@ const QuerySchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   title: String,
   description: String,
-  tags: [{ type: String }],  // list of strings
-  files: [FileSchema],       // <-- files attached to query
+  tags: [{ type: String }],
+  files: [FileSchema],
   replies: [ReplySchema],
+  isAnonymous: { type: Boolean, default: false }, // <-- new field
   createdAt: { type: Date, default: Date.now }
 },{ collection: "Query" });
 
