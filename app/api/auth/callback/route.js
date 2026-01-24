@@ -5,26 +5,26 @@ import User from "@/models/User";
 import { signToken } from "@/lib/auth";
 import { isIIITHEmail } from "@/lib/email";
 
-/**
- * Normalize IIIT email
- * - Trust CAS if it already gives full IIIT email
- * - Fallback only if CAS gives username
- */
 function normalizeIIITEmail(email) {
-  // Remove ALL repeated '@iiit.ac.in'
-  let cleaned = email;
+  let e = email.trim().toLowerCase();
 
-  while (cleaned.endsWith("@iiit.ac.in")) {
-    cleaned = cleaned.slice(0, -13); // remove '@iiit.ac.in'
+  // 1️⃣ Remove ALL trailing '@iiit.ac.in'
+  while (e.endsWith("@iiit.ac.in")) {
+    e = e.slice(0, -13);
   }
 
-  // If it already ends with '.iiit.ac.in' (students/research/faculty), keep it
-  if (cleaned.endsWith(".iiit.ac.in")) {
-    return cleaned;
+  // 2️⃣ Fix broken '.iiit.ac.' → '.iiit.ac.in'
+  if (e.endsWith(".iiit.ac.")) {
+    e = e + "in";
   }
 
-  // Otherwise, append once
-  return `${cleaned}@iiit.ac.in`;
+  // 3️⃣ If it already ends with valid IIIT domain, keep it
+  if (e.endsWith(".iiit.ac.in")) {
+    return e;
+  }
+
+  // 4️⃣ Otherwise, append once
+  return `${e}@iiit.ac.in`;
 }
 
 

@@ -3,12 +3,12 @@ import styles from "./QueryCard.module.css";
 
 export default function QueryCard({ query }: any) {
   return (
-    <Link href={`/query/${query.id}`} className={styles.card}>
+    <Link href={`/query/${query._id}`} className={styles.card}>
       <h2>{query.title}</h2>
 
       <p>{query.description}</p>
 
-      {/* ✅ Tags */}
+      {/* Tags */}
       <div className={styles.tags}>
         {query.tags.map((tag: string) => (
           <span key={tag} className={styles.tag}>
@@ -18,8 +18,8 @@ export default function QueryCard({ query }: any) {
       </div>
 
       <div className={styles.meta}>
-        <span>{query.answers} answers</span>
-        <span>{query.createdAt}</span>
+        <span>{query.replyCount} answers</span>
+        <span>{new Date(query.createdAt).toLocaleString()}</span>
       </div>
     </Link>
   );
