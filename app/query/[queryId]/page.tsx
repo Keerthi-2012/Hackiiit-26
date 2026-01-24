@@ -25,8 +25,7 @@ const MOCK_QUERIES = [
   {
     id: "2",
     title: "Understanding attention in transformers",
-    description:
-      "Need an intuitive explanation with math references.",
+    description: "Need an intuitive explanation with math references.",
     author: "Anonymous",
     tags: ["ML", "Theory"],
     attachments: [],
@@ -34,14 +33,15 @@ const MOCK_QUERIES = [
   },
 ];
 
-export default function QueryPage({
+export default async function QueryPage({
   params,
 }: {
-  params: { queryId: string };
+  params: Promise<{ queryId: string }>;
 }) {
-  const query = MOCK_QUERIES.find(
-    (q) => q.id === params.queryId
-  );
+  // ✅ FIX: await params
+  const { queryId } = await params;
+
+  const query = MOCK_QUERIES.find((q) => q.id === queryId);
 
   if (!query) {
     return <div className="p-6">Query not found</div>;
