@@ -723,7 +723,7 @@ export default function AddBlogModal({
           {/* Content */}
           <TextField
             fullWidth
-            label="Blog Title"
+            label="Blog Description"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="input"

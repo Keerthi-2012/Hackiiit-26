@@ -41,7 +41,7 @@ export default function FAQPage() {
       {/* ========= UI THEME (NO LOGIC CHANGE) ========= */}
       <style>{`
         body {
-          background: radial-gradient(circle at top, #1a2a6c, #0b122b);
+          background: radial-gradient(circle at top, #111834, #0b122b);
         }
 
         .${styles.container} {
