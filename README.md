@@ -101,7 +101,7 @@ http://localhost:3000
   - Stack Overflow (question–answer structure)
   - Academic and research discussion forums
 - No existing open-source project was directly forked or used as a base
-- UI components were implemented using Material UI
+- UI components were implemented using CSS and Material UI
 
 ---
 
