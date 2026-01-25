@@ -7,8 +7,8 @@ import styles from "./FAQ.module.css";
 type FAQ = {
   _id: string;
   question: string;
-  answer: string;
   tags?: string[];
+  exampleQueryIds: string[];
 };
 
 export default function FAQPage() {
@@ -22,7 +22,7 @@ export default function FAQPage() {
         const res = await fetch("/api/faq", { cache: "no-store" });
         const data = await res.json();
         setFaqs(data);
-      } catch (err) {
+      } catch {
         console.error("Failed to load FAQs");
       } finally {
         setLoading(false);
@@ -48,10 +48,7 @@ export default function FAQPage() {
       />
 
       {loading && <p>Loading FAQs...</p>}
-
-      {!loading && filteredFaqs.length === 0 && (
-        <p>No FAQs found.</p>
-      )}
+      {!loading && filteredFaqs.length === 0 && <p>No FAQs found.</p>}
 
       {filteredFaqs.map((faq) => (
         <FAQItem key={faq._id} faq={faq} />

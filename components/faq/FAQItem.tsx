@@ -1,39 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./FAQ.module.css";
 
 type FAQ = {
   question: string;
-  answer: string;
   tags?: string[];
+  exampleQueryIds: string[];
 };
 
 export default function FAQItem({ faq }: { faq: FAQ }) {
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  function handleClick() {
+    if (!faq.exampleQueryIds || faq.exampleQueryIds.length === 0) return;
+    router.push(`/query/${faq.exampleQueryIds[0]}`);
+  }
 
   return (
-    <div className={styles.item}>
-      <button
-        className={styles.question}
-        onClick={() => setOpen(!open)}
-      >
-        {faq.question}
-      </button>
+    <div className={styles.item} onClick={handleClick}>
+      <div className={styles.question}>{faq.question}</div>
 
-      {open && (
-        <div className={styles.answer}>
-          <p>{faq.answer}</p>
-
-          {faq.tags && (
-            <div className={styles.tags}>
-              {faq.tags.map((tag) => (
-                <span key={tag} className={styles.tag}>
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
+      {faq.tags && (
+        <div className={styles.tags}>
+          {faq.tags.map((tag) => (
+            <span key={tag} className={styles.tag}>
+              {tag}
+            </span>
+          ))}
         </div>
       )}
     </div>
