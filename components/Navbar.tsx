@@ -1,5 +1,7 @@
 "use client";
+
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   Dashboard as DashboardIcon,
@@ -8,7 +10,6 @@ import {
   Person as PersonIcon,
 } from "@mui/icons-material";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { usePathname } from "next/navigation";
 
 const navbarStyles = `
   * {
@@ -42,7 +43,6 @@ const navbarStyles = `
     background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    cursor: pointer;
     text-decoration: none;
   }
 
@@ -95,42 +95,6 @@ const navbarStyles = `
       display: none;
     }
   }
-
-  .mobile-drawer-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    z-index: 999;
-  }
-
-  .mobile-drawer {
-    position: fixed;
-    top: 70px;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    z-index: 1000;
-  }
-
-  .mobile-nav-list {
-    list-style: none;
-  }
-
-  .mobile-nav-button {
-    width: 100%;
-    background: none;
-    border: none;
-    color: #cbd5e1;
-    padding: 1rem 1.5rem;
-    display: flex;
-    gap: 1rem;
-    cursor: pointer;
-  }
-
-  .mobile-nav-button:hover {
-    background: rgba(79, 172, 254, 0.1);
-    color: #00f2fe;
-  }
 `;
 
 const navItems = [
@@ -141,43 +105,46 @@ const navItems = [
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
-    const pathname = usePathname();
+  const pathname = usePathname();
 
-  // ❌ Do not render Navbar on landing page
+  // ❌ Do not show Navbar on landing page
   if (pathname === "/") return null;
-    useEffect(() => {
-  const forceHome = () => {
-    window.location.replace("/");
+
+  /* ===========================
+     BACK BUTTON (BFCache FIX)
+  =========================== */
+  useEffect(() => {
+    const onPageShow = (e) => {
+      if (e.persisted) {
+        window.location.replace("/");
+      }
+    };
+
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, []);
+
+  /* ===========================
+     CROSS-TAB LOGOUT SYNC
+  =========================== */
+  useEffect(() => {
+    const onStorage = (e) => {
+      if (e.key === "logout") {
+        window.location.replace("/");
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
+  const handleLogout = () => {
+    // 🔔 notify ALL tabs
+    localStorage.setItem("logout", Date.now().toString());
+
+    // 🔐 server logout
+    window.location.replace("/api/auth/logout");
   };
-
-  // 1️⃣ BFCache restore (best effort)
-  const onPageShow = (e) => {
-    if (e.persisted) {
-      forceHome();
-    }
-  };
-
-  // 2️⃣ Visibility change (Chrome/Safari fallback)
-  const onVisibilityChange = () => {
-    if (document.visibilityState === "visible") {
-      // If user is visible again AFTER logout → kick out
-      forceHome();
-    }
-  };
-
-  window.addEventListener("pageshow", onPageShow);
-  document.addEventListener("visibilitychange", onVisibilityChange);
-
-  return () => {
-    window.removeEventListener("pageshow", onPageShow);
-    document.removeEventListener("visibilitychange", onVisibilityChange);
-  };
-}, []);
-
-const handleLogout = () => {
-window.location.replace("/api/auth/logout");
-};
-
 
   return (
     <>
@@ -185,19 +152,17 @@ window.location.replace("/api/auth/logout");
 
       <nav className="navbar">
         <div className="navbar-container">
-          {/* Logo */}
           <Link href="/dashboard" className="navbar-logo">
             Research Discuss
           </Link>
 
-          {/* Desktop Nav */}
           <div className="nav-desktop">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link key={item.href} href={item.href} className="nav-link">
                   <button className="nav-button">
-                    <Icon sx={{ fontSize: "1.2rem" }} />
+                    <Icon fontSize="small" />
                     {item.label}
                   </button>
                 </Link>
@@ -205,79 +170,25 @@ window.location.replace("/api/auth/logout");
             })}
 
             <button className="nav-button" onClick={handleLogout}>
-  <span className="nav-icon">
-    <LogoutIcon sx={{ fontSize: "1.2rem" }} />
-  </span>
-  Logout
-</button>
+              <LogoutIcon fontSize="small" />
+              Logout
+            </button>
 
-
-           
-
-            {/* Profile icon only */}
             <Link href="/profile" className="nav-link">
               <button className="nav-button">
-                <PersonIcon sx={{ fontSize: "1.4rem" }} />
+                <PersonIcon fontSize="medium" />
               </button>
             </Link>
           </div>
 
-          {/* Mobile Toggle */}
-          <button className="menu-toggle" onClick={() => setMobileOpen(!mobileOpen)}>
+          <button
+            className="menu-toggle"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
             ☰
           </button>
         </div>
       </nav>
-
-      {/* Mobile Drawer */}
-      {mobileOpen && (
-        <>
-          <div
-            className="mobile-drawer-overlay"
-            onClick={() => setMobileOpen(false)}
-          />
-          <div className="mobile-drawer">
-            <ul className="mobile-nav-list">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <li key={item.href}>
-                    <Link href={item.href}>
-                      <button
-                        className="mobile-nav-button"
-                        onClick={() => setMobileOpen(false)}
-                      >
-                        <Icon />
-                        {item.label}
-                      </button>
-                    </Link>
-                  </li>
-                );
-              })}
-
-              <li>
-                <button
-                  className="mobile-nav-button"
-                  onClick={handleLogout}
-                >
-                  🚪 Logout
-                </button>
-              </li>
-
-              <li>
-                <Link href="/profile">
-                  <button
-                    className="mobile-nav-button"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    👤 Profile
-                  </button>
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </>
-      )}
     </>
   );
 }
