@@ -76,6 +76,7 @@ cd research-discuss
 ### 2. Install dependencies
 ```bash
 npm install
+npm install @mui/material@latest @mui/system@latest @emotion/react @emotion/styled
 ```
 ### 3. Create environment variables
 ```bash
