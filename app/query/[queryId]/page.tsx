@@ -6,6 +6,8 @@ import QueryHeader from "@/components/query/QueryHeader";
 import QueryBody from "@/components/query/QueryBody";
 import AttachmentViewer from "@/components/query/AttachmentViewer";
 import Discussion from "@/components/query/Discussion";
+import CommentForm from "@/components/query/CommentForm";
+
 
 export default async function QueryPage({
   params,
@@ -49,14 +51,17 @@ export default async function QueryPage({
         title={query.title}
         author={query.userName}
         tags={query.tags}
-        queryId={query.id}
+        queryId={query._id}
       />
 
       <QueryBody description={query.description} />
 
       <AttachmentViewer attachments={query.files || []} />
 
-      <Discussion comments={query.replies || []} />
+<Discussion queryId={query._id} />
+
+
+      
     </div>
   );
 }

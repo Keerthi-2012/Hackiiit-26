@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import QueryCard from "@/components/dashboard/QueryCard";
 
 type Query = {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   tags: string[];
-  replyCount: number; // number of replies
+  replyCount: number;
   createdAt: string;
 };
 
@@ -20,8 +20,8 @@ export default function AnsweredQueries() {
     async function fetchAnsweredQueries() {
       try {
         const res = await fetch("/api/profile/myanswers", {
-          credentials: "include", // send cookies if needed
-          cache: "no-store",      // always fetch fresh data
+          credentials: "include",
+          cache: "no-store",
         });
 
         if (!res.ok) throw new Error("Failed to fetch answered queries");
@@ -48,10 +48,10 @@ export default function AnsweredQueries() {
 
       {queries.map((q) => (
         <QueryCard
-          key={q.id}
+          key={q._id}
           query={{
             ...q,
-            answers: q.replyCount, // map API field to QueryCard prop
+            answers: q.replyCount, // QueryCard compatibility
           }}
         />
       ))}
