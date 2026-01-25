@@ -3,6 +3,8 @@ import connectToDatabase from "@/lib/mongodb";
 import Query from "@/models/Query";
 import Reply from "@/models/Reply";
 import jwt from "jsonwebtoken";
+import User from "@/models/User";
+
 import fs from "fs";
 import path from "path";
 
@@ -28,61 +30,28 @@ export async function POST(request) {
   await connectToDatabase();
 
   try {
-    // ✅ userId from JWT cookie
     const userId = getUserIdFromRequest(request);
     if (!userId) {
-      return NextResponse.json(
-        { error: "Unauthorized: user missing" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const formData = await request.formData();
-    const title = formData.get("title");
-    const description = formData.get("description");
-    const tags = formData.get("tags");
-    const isAnonymous = formData.get("isAnonymous") === "true";
+    const body = await request.json();
+    const { title, description, tags, isAnonymous } = body;
 
-    if (!title || !description) {
+    if (!title || !description || !tags?.length) {
       return NextResponse.json(
-        { error: "Title and description required" },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
-    /* 📎 Handle file uploads safely */
-    const uploadedFiles = [];
-    for (const [key, value] of formData.entries()) {
-      if (
-        key === "files" &&
-        value &&
-        value.name &&
-        value.size > 0
-      ) {
-        const buffer = Buffer.from(await value.arrayBuffer());
-        const uploadDir = path.join(process.cwd(), "public/uploads");
-        fs.mkdirSync(uploadDir, { recursive: true });
-
-        const filename = `${Date.now()}-${value.name}`;
-        fs.writeFileSync(path.join(uploadDir, filename), buffer);
-
-        uploadedFiles.push({
-          filename: value.name,
-          url: `/uploads/${filename}`,
-          fileType: path.extname(value.name).substring(1),
-          uploadedAt: new Date(),
-        });
-      }
-    }
-
-    /* 🗃️ Create query */
     const query = await Query.create({
-      user: userId,              // ✅ CONSISTENT WITH USER._id
+      user: userId,
       title,
       description,
-      tags: tags ? tags.split(",").map(t => t.trim()) : [],
-      files: uploadedFiles,
+      tags,
       isAnonymous,
+      files: [],
     });
 
     return NextResponse.json(

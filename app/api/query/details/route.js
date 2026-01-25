@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Query from "@/models/Query";
 import Reply from "@/models/Reply";
+import mongoose from "mongoose";
 
 export async function GET(request) {
   await connectToDatabase();
@@ -10,12 +11,12 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const queryId = searchParams.get("queryId");
 
-    if (!queryId) {
-      return NextResponse.json(
-        { error: "queryId is required" },
-        { status: 400 }
-      );
-    }
+if (!queryId || !mongoose.Types.ObjectId.isValid(queryId)) {
+  return NextResponse.json(
+    { error: "Invalid or missing queryId" },
+    { status: 400 }
+  );
+}
 
     // 1️⃣ Fetch query
     const query = await Query.findById(queryId)

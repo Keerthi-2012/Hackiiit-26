@@ -79,33 +79,38 @@ export default function AddQueryModal({
     );
   }
 
-  function handleSubmit() {
-    if (!text.trim()) {
-      alert("Please describe your query");
-      return;
-    }
-    if (selectedTags.length === 0) {
-      alert("Please select at least one tag");
-      return;
+async function handleSubmit() {
+  if (!text.trim() || selectedTags.length === 0) return;
+
+  setIsSubmitting(true);
+
+  try {
+    const res = await fetch("/api/query", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: text.slice(0, 80),
+        description: text,
+        tags: selectedTags,
+        isAnonymous: anonymous,
+      }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to create query");
     }
 
-    setIsSubmitting(true);
-    const payload = {
-      text,
-      tags: selectedTags,
-      anonymous,
-    };
-    console.log("New Query:", payload);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setText("");
-      setSelectedTags([]);
-      setAnonymous(false);
-      onClose();
-    }, 1000);
+    onClose();
+    window.location.reload(); // simple refresh
+  } catch (err) {
+    console.error(err);
+    alert("Failed to post query");
+  } finally {
+    setIsSubmitting(false);
   }
+}
 
   const isFormValid = text.trim().length > 0 && selectedTags.length > 0;
 
