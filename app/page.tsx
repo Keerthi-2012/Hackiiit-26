@@ -57,15 +57,16 @@ export default async function HomePage() {
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
 
-  if (token) {
-    try {
-      jwt.verify(token as string, process.env.JWT_SECRET as string) as TokenPayload;
-      redirect('/dashboard');
-    } catch (error) {
-      console.error('Token verification failed:', error);
-    }
+if (token) {
+  try {
+    jwt.verify(token, process.env.JWT_SECRET!);
+  } catch {
+    // invalid token → ignore
+    return;
   }
 
+  redirect("/dashboard"); // ← OUTSIDE try/catch
+}
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f5f7fa', background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)'   }} >
       {/* Header/Navigation */}
