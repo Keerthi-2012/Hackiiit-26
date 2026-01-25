@@ -5,7 +5,10 @@ export async function GET() {
     "https://login.iiit.ac.in/cas/logout"
   );
 
-  res.cookies.set("token", "", { maxAge: 0, path: "/" });
+  res.cookies.set("token", "", {
+    maxAge: 0,
+    path: "/",
+  });
 
   return res;
 }

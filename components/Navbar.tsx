@@ -142,11 +142,10 @@ const navItems = [
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const handleLogout = async () => {
-    // frontend only
-    await fetch("/api/auth/logout", { method: "POST" });
-    window.location.href = "/login";
-  };
+const handleLogout = () => {
+  window.location.href = "/api/auth/logout";
+};
+
 
   return (
     <>
