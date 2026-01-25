@@ -17,7 +17,8 @@ interface TokenPayload extends JwtPayload {
 }
 
 export default async function HomePage() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
+
   const token = cookieStore.get("token")?.value;
 
   /* =========================
