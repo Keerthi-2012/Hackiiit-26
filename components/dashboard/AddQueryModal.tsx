@@ -446,25 +446,35 @@ export default function AddQueryModal({
 
   async function handleSubmit() {
     if (!title.trim() || !text.trim() || selectedTags.length === 0) return;
-
+  
     setIsSubmitting(true);
-
+  
     try {
+      const filesToSend = await Promise.all(
+        files.map(async (file) => {
+          const base64 = await fileToBase64(file); // convert to base64
+          return {
+            filename: file.name,
+            fileType: file.type,
+            url: base64, // put base64 string here
+          };
+        })
+      );
+  
       const res = await fetch("/api/query", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title,
           description: text,
           tags: selectedTags,
           isAnonymous: anonymous,
+          files: filesToSend,
         }),
       });
-
+  
       if (!res.ok) throw new Error("Failed to create query");
-
+  
       onClose();
       window.location.reload();
     } catch (err) {
@@ -473,6 +483,15 @@ export default function AddQueryModal({
     } finally {
       setIsSubmitting(false);
     }
+  }
+  
+  function fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file); // convert to base64
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (err) => reject(err);
+    });
   }
 
   const isFormValid =
