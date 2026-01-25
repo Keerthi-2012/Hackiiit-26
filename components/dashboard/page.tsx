@@ -16,7 +16,10 @@ import {
   InputAdornment,
   Stack,
 } from "@mui/material";
-import { Add as AddIcon, Search as SearchIcon } from "@mui/icons-material";
+import {
+  Add as AddIcon,
+  Search as SearchIcon,
+} from "@mui/icons-material";
 
 import QueryCard from "./QueryCard";
 import AddQueryModal from "@/components/dashboard/AddQueryModal";
@@ -51,21 +54,19 @@ export default function Dashboard() {
       q.title?.toLowerCase().includes(search.toLowerCase()) ||
       q.description?.toLowerCase().includes(search.toLowerCase());
 
-    const matchesTag = tag === "All" || q.tags?.includes(tag);
+    const matchesTag =
+      tag === "All" || q.tags?.includes(tag);
+
     return matchesSearch && matchesTag;
   });
 
   if (loading) {
-    return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography>Loading queries...</Typography>
-      </Container>
-    );
+    return <Box sx={{ p: 4 }}>Loading queries...</Box>;
   }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Header */}
+      {/* Header Section */}
       <Box sx={{ mb: 4 }}>
         <Box
           sx={{
@@ -77,7 +78,10 @@ export default function Dashboard() {
             gap: 2,
           }}
         >
-          <Typography variant="h4" sx={{ fontWeight: 700 }}>
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, color: "#1F2937" }}
+          >
             All Queries
           </Typography>
 
@@ -85,6 +89,18 @@ export default function Dashboard() {
             variant="contained"
             startIcon={<AddIcon />}
             onClick={() => setShowModal(true)}
+            sx={{
+              background: "#4C6FFF",
+              textTransform: "none",
+              fontSize: 16,
+              fontWeight: 600,
+              px: 3,
+              py: 1.2,
+              borderRadius: 2,
+              "&:hover": {
+                background: "#1E3A8A",
+              },
+            }}
           >
             Add Query
           </Button>
@@ -92,14 +108,34 @@ export default function Dashboard() {
 
         {/* Stats */}
         <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-          <Paper sx={{ p: 2, minWidth: 160 }}>
-            <Typography variant="body2">Total Queries</Typography>
-            <Typography variant="h6">{queries.length}</Typography>
+          <Paper
+            sx={{
+              p: 2,
+              background: "linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)",
+              borderRadius: 2,
+              minWidth: 160,
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "#6B7280" }}>
+              Total Queries
+            </Typography>
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              {queries.length}
+            </Typography>
           </Paper>
 
-          <Paper sx={{ p: 2, minWidth: 160 }}>
-            <Typography variant="body2">Total Answers</Typography>
-            <Typography variant="h6">
+          <Paper
+            sx={{
+              p: 2,
+              background: "linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%)",
+              borderRadius: 2,
+              minWidth: 160,
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "#6B7280" }}>
+              Total Answers
+            </Typography>
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
               {queries.reduce(
                 (sum, q) => sum + (q.answers?.length || 0),
                 0
@@ -110,23 +146,30 @@ export default function Dashboard() {
       </Box>
 
       {/* Search & Filter */}
-      <Paper sx={{ p: 3, mb: 4 }}>
-        <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
-          <TextField
-            fullWidth
-            size="small"
+      <Paper
+        sx={{
+          p: 3,
+          mb: 4,
+          borderRadius: 2,
+          background: "#FAFAFA",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexWrap: "wrap",
+            alignItems: "flex-end",
+          }}
+        >
+        <input
+            type="text"
             placeholder="Search by keyword"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
+            style={{ flex: 1, padding: 8 }}
           />
-
           <FormControl size="small" sx={{ minWidth: 160 }}>
             <InputLabel>Filter by Tag</InputLabel>
             <Select
@@ -146,18 +189,28 @@ export default function Dashboard() {
 
       {/* Active Filters */}
       {(search || tag !== "All") && (
-        <Stack direction="row" spacing={1} sx={{ mb: 3 }}>
+        <Stack direction="row" spacing={1} sx={{ mb: 3, flexWrap: "wrap" }}>
           {search && (
             <Chip
               label={`Search: "${search}"`}
               onDelete={() => setSearch("")}
+              size="small"
+              variant="outlined"
             />
           )}
           {tag !== "All" && (
-            <Chip label={`Tag: ${tag}`} onDelete={() => setTag("All")} />
+            <Chip
+              label={`Tag: ${tag}`}
+              onDelete={() => setTag("All")}
+              size="small"
+              variant="outlined"
+            />
           )}
         </Stack>
       )}
+
+      {/* Modal */}
+      {showModal && <AddQueryModal onClose={() => setShowModal(false)} />}
 
       {/* Query List */}
       {filteredQueries.length > 0 ? (
@@ -165,13 +218,23 @@ export default function Dashboard() {
           <QueryCard key={q._id} query={q} />
         ))
       ) : (
-        <Paper sx={{ p: 4, textAlign: "center" }}>
-          <SearchIcon sx={{ fontSize: 48 }} />
-          <Typography>No queries found</Typography>
+        <Paper
+          sx={{
+            p: 4,
+            textAlign: "center",
+            borderRadius: 2,
+            background: "#F9FAFB",
+            border: "2px dashed #D1D5DB",
+            color: "#6B7280",
+          }}
+        >
+          <SearchIcon sx={{ fontSize: 48, mb: 2 }} />
+          <Typography variant="h6">No queries found</Typography>
+          <Typography variant="body2">
+            Try adjusting your search or filters
+          </Typography>
         </Paper>
       )}
-
-      {showModal && <AddQueryModal onClose={() => setShowModal(false)} />}
     </Container>
   );
 }
