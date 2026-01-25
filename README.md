@@ -82,7 +82,9 @@ npm install
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
-
+CAS_BASE_URL=https://login.iiit.ac.in/cas
+CAS_SERVICE_URL=http://localhost:3000/api/auth/callback
+NEXT_PUBLIC_CAS_BASE_URL=https://login.iiit.ac.in/cas
 ```
 ### 4. Run the development server
 ```bash
