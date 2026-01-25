@@ -486,19 +486,6 @@ export default function Dashboard() {
             </button>
           </div>
 
-          {/* Stats */}
-          <div className="stats-container">
-            <div className="stat-card">
-              <div className="stat-label">Total Queries</div>
-              <div className="stat-value">{queries.length}</div>
-            </div>
-            <div className="stat-card green">
-              <div className="stat-label">Total Answers</div>
-              <div className="stat-value">
-                {queries.reduce((sum, q) => sum + (q.answers?.length || 0), 0)}
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Search & Filter */}

@@ -615,18 +615,13 @@ export default function AddQueryModal({
                 />
                 <div className="anonymous-text">
                   <div className="anonymous-title">Post Anonymously</div>
+                  <div>
+                    Your query will be visible to the community. Please ensure you
+                    provide enough context for others to understand your question.
+                  </div>
                 </div>
               </label>
-            </div>
-
-            {/* Alert */}
-            <div className="alert-box">
-              <div className="alert-icon">ℹ️</div>
-              <div>
-                Your query will be visible to the community. Please ensure you
-                provide enough context for others to understand your question.
-              </div>
-            </div>
+            </div>           
           </div>
 
           {/* Footer */}

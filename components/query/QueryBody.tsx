@@ -1,6 +1,4 @@
-
 'use client';
-
 import React from 'react';
 import {
   Box,
@@ -30,80 +28,27 @@ export default function QueryBody({
 
   return (
     <Paper
-      elevation={1}
+      elevation={0}
       sx={{
         borderRadius: 2,
         p: 3,
-        mx: 75,
-        backgroundColor: '#fafbfc',
-        border: '1px solid #e0e0e0',
+        mx: { xs: 2, sm: 4, md: 8, lg: 10 },
+        background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.4) 100%)',
+        border: '1px solid rgba(79, 172, 254, 0.15)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
       }}
     >
-      {/* QUERY HEADER (NOT FULL WIDTH) */}
-      <Stack
-        sx={{
-          width: 'fit-content',
-          mb: 2,
-        }}
-      >
-        <Stack
-          direction="row"
-          spacing={2}
-          alignItems="center"
-          sx={{
-            px: 2,
-            py: 1.5,
-            borderRadius: 2,
-            backgroundColor: '#fafafa',
-          }}
-        >
-          <Box
-            sx={{
-              p: 1,
-              background:
-                'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              borderRadius: 1,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <InfoIcon sx={{ color: 'white', fontSize: 18 }} />
-          </Box>
-
-          <Box sx={{m:3}}>
-            <Typography
-              variant="caption"
-              sx={{
-                color: '#999',
-                fontWeight: 600,
-                display: 'block',
-              }}
-            >
-              QUERY
-            </Typography>
-            <Typography
-              variant="caption"
-              sx={{
-                color: '#666',
-                mt: 0.3,
-              }}
-            >
-              {calculatedWordCount} words
-            </Typography>
-          </Box>
-        </Stack>
-      </Stack>
-
       {/* DESCRIPTION (FULL WIDTH) */}
       <Typography
         variant="body2"
         sx={{
-          color: '#555',
-          lineHeight: 1.7,
+          color: '#cbd5e1',
+          lineHeight: 1.8,
           wordBreak: 'break-word',
           whiteSpace: 'pre-wrap',
           mb: tags && tags.length > 0 ? 2 : 0,
+          fontSize: '0.95rem',
         }}
       >
         {description}
@@ -118,13 +63,14 @@ export default function QueryBody({
               label={tag}
               size="small"
               sx={{
-                borderColor: '#667eea',
-                color: '#667eea',
-                fontWeight: 500,
-                backgroundColor: 'transparent',
-                border: '1px solid #667eea',
+                borderColor: '#4facfe',
+                color: '#00f2fe',
+                fontWeight: 600,
+                backgroundColor: 'rgba(79, 172, 254, 0.1)',
+                border: '1px solid rgba(79, 172, 254, 0.3)',
                 '&:hover': {
-                  backgroundColor: 'rgba(102, 126, 234, 0.08)',
+                  backgroundColor: 'rgba(79, 172, 254, 0.2)',
+                  borderColor: '#00f2fe',
                 },
               }}
             />
