@@ -444,55 +444,103 @@ export default function AddQueryModal({
     setFiles(Array.from(e.target.files));
   }
 
+  // async function handleSubmit() {
+  //   if (!title.trim() || !text.trim() || selectedTags.length === 0) return;
+  
+  //   setIsSubmitting(true);
+  
+  //   try {
+  //     const filesToSend = await Promise.all(
+  //       files.map(async (file) => {
+  //         const base64 = await fileToBase64(file); // convert to base64
+  //         return {
+  //           filename: file.name,
+  //           fileType: file.type,
+  //           url: base64, // put base64 string here
+  //         };
+  //       })
+  //     );
+  
+  //     const res = await fetch("/api/query", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         title,
+  //         description: text,
+  //         tags: selectedTags,
+  //         isAnonymous: anonymous,
+  //         files: filesToSend,
+  //       }),
+  //     });
+  
+  //     if (!res.ok) throw new Error("Failed to create query");
+  
+  //     onClose();
+  //     window.location.reload();
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Failed to post query");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // }
+  
+  // function fileToBase64(file: File): Promise<string> {
+  //   return new Promise((resolve, reject) => {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(file); // convert to base64
+  //     reader.onload = () => resolve(reader.result as string);
+  //     reader.onerror = (err) => reject(err);
+  //   });
+  // }
   async function handleSubmit() {
-    if (!title.trim() || !text.trim() || selectedTags.length === 0) return;
-  
-    setIsSubmitting(true);
-  
-    try {
-      const filesToSend = await Promise.all(
-        files.map(async (file) => {
-          const base64 = await fileToBase64(file); // convert to base64
-          return {
-            filename: file.name,
-            fileType: file.type,
-            url: base64, // put base64 string here
+  if (!title.trim() || !text.trim() || selectedTags.length === 0) return;
+
+  setIsSubmitting(true);
+
+  try {
+    // Convert files to Base64
+    const filesData = await Promise.all(
+      files.map(file => {
+        return new Promise<{ filename: string; fileType: string; data: string }>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            resolve({
+              filename: file.name,
+              fileType: file.type || "unknown",
+              data: reader.result as string,
+            });
           };
-        })
-      );
-  
-      const res = await fetch("/api/query", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title,
-          description: text,
-          tags: selectedTags,
-          isAnonymous: anonymous,
-          files: filesToSend,
-        }),
-      });
-  
-      if (!res.ok) throw new Error("Failed to create query");
-  
-      onClose();
-      window.location.reload();
-    } catch (err) {
-      console.error(err);
-      alert("Failed to post query");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-  
-  function fileToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file); // convert to base64
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (err) => reject(err);
+          reader.onerror = reject;
+          reader.readAsDataURL(file); // Base64
+        });
+      })
+    );
+
+    const res = await fetch("/api/query", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title,
+        description: text,
+        tags: selectedTags,
+        isAnonymous: anonymous,
+        files: filesData,
+      }),
     });
+
+    if (!res.ok) throw new Error("Failed to create query");
+
+    onClose();
+    window.location.reload();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to post query");
+  } finally {
+    setIsSubmitting(false);
   }
+}
+
 
   const isFormValid =
     title.trim().length > 0 &&
