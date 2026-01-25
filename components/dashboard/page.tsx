@@ -33,9 +33,6 @@ export default function Dashboard() {
   const [search, setSearch] = useState("");
   const [tag, setTag] = useState("All");
 
-  /* =========================
-     Fetch Queries
-  ========================= */
   useEffect(() => {
     async function fetchQueries() {
       try {
@@ -52,9 +49,6 @@ export default function Dashboard() {
     fetchQueries();
   }, []);
 
-  /* =========================
-     Filter Logic
-  ========================= */
   const filteredQueries = queries.filter((q) => {
     const matchesSearch =
       q.title?.toLowerCase().includes(search.toLowerCase()) ||
@@ -67,81 +61,100 @@ export default function Dashboard() {
   });
 
   if (loading) {
-    return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Typography>Loading queries...</Typography>
-      </Container>
-    );
+    return <Box sx={{ p: 4 }}>Loading queries...</Box>;
   }
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* =========================
-         Header
-      ========================= */}
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 4,
-          flexWrap: "wrap",
-          gap: 2,
-        }}
-      >
-        <Typography
-          variant="h4"
-          sx={{ fontWeight: 700, color: "#1F2937" }}
-        >
-          All Queries
-        </Typography>
-
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setShowModal(true)}
+      {/* Header Section */}
+      <Box sx={{ mb: 4 }}>
+        <Box
           sx={{
-            background: "#4C6FFF",
-            textTransform: "none",
-            fontSize: 16,
-            fontWeight: 600,
-            px: 3,
-            py: 1.2,
-            borderRadius: 2,
-            "&:hover": { background: "#1E3A8A" },
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
+            flexWrap: "wrap",
+            gap: 2,
           }}
         >
-          Add Query
-        </Button>
+          <Typography
+            variant="h4"
+            sx={{ fontWeight: 700, color: "#1F2937" }}
+          >
+            All Queries
+          </Typography>
+
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setShowModal(true)}
+            sx={{
+              background: "#4C6FFF",
+              textTransform: "none",
+              fontSize: 16,
+              fontWeight: 600,
+              px: 3,
+              py: 1.2,
+              borderRadius: 2,
+              "&:hover": {
+                background: "#1E3A8A",
+              },
+            }}
+          >
+            Add Query
+          </Button>
+        </Box>
+
+        {/* Stats */}
+        <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
+          <Paper
+            sx={{
+              p: 2,
+              background: "linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%)",
+              borderRadius: 2,
+              minWidth: 160,
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "#6B7280" }}>
+              Total Queries
+            </Typography>
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              {queries.length}
+            </Typography>
+          </Paper>
+
+          <Paper
+            sx={{
+              p: 2,
+              background: "linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%)",
+              borderRadius: 2,
+              minWidth: 160,
+            }}
+          >
+            <Typography variant="body2" sx={{ color: "#6B7280" }}>
+              Total Answers
+            </Typography>
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              {queries.reduce(
+                (sum, q) => sum + (q.answers?.length || 0),
+                0
+              )}
+            </Typography>
+          </Paper>
+        </Box>
       </Box>
 
-      {/* =========================
-         Stats
-      ========================= */}
-      <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap", mb: 4 }}>
-        <Paper sx={{ p: 2, borderRadius: 2, minWidth: 160 }}>
-          <Typography variant="body2" color="text.secondary">
-            Total Queries
-          </Typography>
-          <Typography variant="h6" fontWeight={700}>
-            {queries.length}
-          </Typography>
-        </Paper>
-
-        <Paper sx={{ p: 2, borderRadius: 2, minWidth: 160 }}>
-          <Typography variant="body2" color="text.secondary">
-            Total Answers
-          </Typography>
-          <Typography variant="h6" fontWeight={700}>
-            {queries.reduce((sum, q) => sum + (q.replyCount || 0), 0)}
-          </Typography>
-        </Paper>
-      </Box>
-
-      {/* =========================
-         Search & Filter
-      ========================= */}
-      <Paper sx={{ p: 3, mb: 4, borderRadius: 2 }}>
+      {/* Search & Filter */}
+      <Paper
+        sx={{
+          p: 3,
+          mb: 4,
+          borderRadius: 2,
+          background: "#FAFAFA",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -150,21 +163,13 @@ export default function Dashboard() {
             alignItems: "flex-end",
           }}
         >
-          <TextField
-            fullWidth
-            size="small"
-            placeholder="Search queries"
+        <input
+            type="text"
+            placeholder="Search by keyword"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
+            style={{ flex: 1, padding: 8 }}
           />
-
           <FormControl size="small" sx={{ minWidth: 160 }}>
             <InputLabel>Filter by Tag</InputLabel>
             <Select
@@ -182,9 +187,7 @@ export default function Dashboard() {
         </Box>
       </Paper>
 
-      {/* =========================
-         Active Filters
-      ========================= */}
+      {/* Active Filters */}
       {(search || tag !== "All") && (
         <Stack direction="row" spacing={1} sx={{ mb: 3, flexWrap: "wrap" }}>
           {search && (
@@ -206,9 +209,10 @@ export default function Dashboard() {
         </Stack>
       )}
 
-      {/* =========================
-         Query List
-      ========================= */}
+      {/* Modal */}
+      {showModal && <AddQueryModal onClose={() => setShowModal(false)} />}
+
+      {/* Query List */}
       {filteredQueries.length > 0 ? (
         filteredQueries.map((q) => (
           <QueryCard key={q._id} query={q} />
@@ -219,6 +223,7 @@ export default function Dashboard() {
             p: 4,
             textAlign: "center",
             borderRadius: 2,
+            background: "#F9FAFB",
             border: "2px dashed #D1D5DB",
             color: "#6B7280",
           }}
@@ -229,13 +234,6 @@ export default function Dashboard() {
             Try adjusting your search or filters
           </Typography>
         </Paper>
-      )}
-
-      {/* =========================
-         Modal
-      ========================= */}
-      {showModal && (
-        <AddQueryModal onClose={() => setShowModal(false)} />
       )}
     </Container>
   );

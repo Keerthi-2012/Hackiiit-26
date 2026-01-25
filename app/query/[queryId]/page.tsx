@@ -10,7 +10,7 @@ import Discussion from "@/components/query/Discussion";
 export default async function QueryPage({
   params,
 }: {
-  params: { queryId: string };
+  params: Promise<{ queryId: string }>;
 }) {
   /* 🔐 Auth check */
   const cookieStore = await cookies();
@@ -24,9 +24,14 @@ export default async function QueryPage({
     redirect("/");
   }
 
-  const { queryId } = params;
+  /* ✅ FIX: await params */
+  const { queryId } = await params;
 
-  /* 📡 Fetch query details from backend */
+  if (!queryId || queryId === "undefined") {
+    return <div className="p-6">Invalid query</div>;
+  }
+
+  /* 📡 Fetch query details */
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/api/query/details?queryId=${queryId}`,
     { cache: "no-store" }
@@ -42,9 +47,9 @@ export default async function QueryPage({
     <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
       <QueryHeader
         title={query.title}
-        author={query.author}
+        author={query.userName}
         tags={query.tags}
-        queryId={query._id}
+        queryId={query.id}
       />
 
       <QueryBody description={query.description} />

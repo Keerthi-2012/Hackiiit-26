@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
-import Faq from "@/models/Faq.js";
+import Faq from "@/models/FAQCandidate.js";
 
 export async function GET() {
   await connectToDatabase();
