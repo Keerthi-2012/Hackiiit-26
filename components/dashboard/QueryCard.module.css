@@ -198,14 +198,16 @@
 }
 
 .meta span:first-child::before {
-  content: "📝";
+  /* content: "📝"; */
   margin-right: 0.25rem;
 }
 
-.meta span:last-child::before {
-  content: "⏰";
-  margin-right: 0.25rem;
+.meta span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
 }
+
 
 .tags {
   display: flex;

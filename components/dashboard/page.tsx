@@ -22,6 +22,7 @@ const TAGS = [
   "HCI",
   "Bioinformatics",
 ];
+import { Add as AddIcon } from "@mui/icons-material";
 
 const dashboardStyles = `
   @keyframes floatUp {
@@ -478,11 +479,10 @@ export default function Dashboard() {
         <div className="header-section">
           <div className="header-top">
             <div className="header-left">
-              <div className="icon-box">✨</div>
               <h1 className="title">All Queries</h1>
             </div>
             <button className="btn-primary" onClick={() => setShowModal(true)}>
-              <span>➕</span> Add Query
+            <AddIcon sx={{ fontSize: "1.2rem" }} /> Add Query
             </button>
           </div>
 

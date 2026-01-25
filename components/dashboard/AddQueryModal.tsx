@@ -496,7 +496,6 @@ export default function AddQueryModal({
             {/* Query Title */}
             <div className="form-group">
               <label className="form-label">
-                <span className="form-label-icon">📌</span>
                 Query Title
               </label>
               <input
@@ -512,7 +511,6 @@ export default function AddQueryModal({
             {/* Description */}
             <div className="form-group">
               <label className="form-label">
-                <span className="form-label-icon">📝</span>
                 Describe Your Research Query
               </label>
               <textarea
@@ -526,7 +524,6 @@ export default function AddQueryModal({
             {/* Tags Section */}
             <div className="form-group">
               <label className="form-label">
-                <span className="form-label-icon">🏷️</span>
                 Select Tags ({selectedTags.length})
               </label>
               <div className="tags-container">
@@ -575,7 +572,6 @@ export default function AddQueryModal({
             {/* Attachments */}
             <div className="form-group">
               <label className="form-label">
-                <span className="form-label-icon">📎</span>
                 Attachments (Optional)
               </label>
               <div className="attachments-section">
@@ -591,7 +587,6 @@ export default function AddQueryModal({
                     className="file-btn"
                     onClick={() => document.getElementById("file-input")?.click()}
                   >
-                    <span>📤</span>
                     Attach Files
                   </button>
                 </div>
@@ -644,7 +639,6 @@ export default function AddQueryModal({
               onClick={handleSubmit}
               disabled={!isFormValid || isSubmitting}
             >
-              <span>📤</span>
               {isSubmitting ? "Posting..." : "Post Query"}
             </button>
           </div>
