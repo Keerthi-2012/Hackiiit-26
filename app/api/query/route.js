@@ -1,15 +1,12 @@
 import { NextResponse } from "next/server";
 import connectToDatabase from "@/lib/mongodb";
 import Query from "@/models/Query";
-import Reply from "@/models/Reply";
+import FAQCandidate from "@/models/FAQCandidate";
 import jwt from "jsonwebtoken";
-import User from "@/models/User";
-
-import fs from "fs";
-import path from "path";
-
+import User from "@/models/User"
+import Reply from "@/models/Reply"
 /* =========================
-   🔐 Extract userId from JWT (API-safe)
+   🔐 Extract userId from JWT
 ========================= */
 function getUserIdFromRequest(request) {
   const token = request.cookies.get("token")?.value;
@@ -24,35 +21,82 @@ function getUserIdFromRequest(request) {
 }
 
 /* =========================
-   📝 POST: Create a new query
+   🧠 Normalize text
+========================= */
+function normalize(text) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+/* =========================
+   📝 POST: Create Query + Track FAQ
 ========================= */
 export async function POST(request) {
   await connectToDatabase();
 
   try {
+    // 🔐 Auth
     const userId = getUserIdFromRequest(request);
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // 📥 Body
     const body = await request.json();
-    const { title, description, tags, isAnonymous } = body;
+    const { title, description, tags, isAnonymous = false } = body;
 
-    if (!title || !description || !tags?.length) {
+    if (!title || !description || !tags) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
+    // 🏷️ Normalize tags (array OR string)
+    const tagArray = Array.isArray(tags)
+      ? tags.map(t => t.trim())
+      : tags.split(",").map(t => t.trim());
+
+    /* =========================
+       ✅ CREATE QUERY (UNCHANGED)
+    ========================= */
     const query = await Query.create({
       user: userId,
       title,
       description,
-      tags,
+      tags: tagArray,
       isAnonymous,
       files: [],
     });
+
+    /* =========================
+       🔥 FAQ CANDIDATE TRACKING
+    ========================= */
+    const normalizedTitle = normalize(title);
+    const primaryTag = tagArray[0] || "general";
+    const frequencyKey = `${primaryTag}:${normalizedTitle}`;
+    const THRESHOLD = 5;
+
+    let candidate = await FAQCandidate.findOne({ frequencyKey });
+
+    if (candidate) {
+      candidate.count += 1;
+      candidate.exampleQueryIds.push(query._id);
+
+      if (candidate.count >= THRESHOLD) {
+        candidate.status = "ready_for_review"; // ✅ valid enum
+      }
+
+      await candidate.save();
+    } else {
+      await FAQCandidate.create({
+        frequencyKey,
+        question: title,
+        tags: tagArray,
+        exampleQueryIds: [query._id],
+        count: 1
+        // status defaults to "pending"
+      });
+    }
 
     return NextResponse.json(
       { queryId: query._id },
@@ -68,14 +112,14 @@ export async function POST(request) {
 }
 
 /* =========================
-   📄 GET: Fetch all queries (dashboard)
+   📄 GET: Fetch all queries
 ========================= */
 export async function GET() {
   await connectToDatabase();
 
   try {
     const queries = await Query.find()
-      .populate("user", "name")   // ✅ correct field
+      .populate("user", "name")
       .sort({ createdAt: -1 })
       .lean();
 
@@ -87,7 +131,7 @@ export async function GET() {
       ).length;
 
       return {
-        _id: q._id,               // ✅ MongoDB ID
+        _id: q._id,
         title: q.title,
         description: q.description,
         tags: q.tags,
