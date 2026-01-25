@@ -47,11 +47,11 @@ const getFileIcon = (fileName: string) => {
       return <InsertDriveFileIcon sx={{ color: '#757575' }} />;
   }
 };
-
 export default function AttachmentViewer({
-  attachments = [],
+  attachments,
 }: AttachmentViewerProps) {
-  if (!attachments.length) return null;
+  // ✅ hard guard
+  if (!Array.isArray(attachments) || attachments.length === 0) return null;
 
   return (
     <Box sx={{ width: '100%', maxWidth: 700, mx: 'auto', mt: 2 }}>
@@ -74,42 +74,48 @@ export default function AttachmentViewer({
 
         {/* Files */}
         <List disablePadding>
-          {attachments.map((file, index) => (
-            <React.Fragment key={`${file.url}-${index}`}>
-              <ListItem disablePadding>
-                <ListItemButton
-                  href={file.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <ListItemIcon>
-                    {getFileIcon(file.name)}
-                  </ListItemIcon>
+          {attachments.map((file, index) => {
+            if (!file?.name || !file?.url) return null; // ✅ guard
 
-                  <Typography sx={{ fontWeight: 600 }}>
-                    {file.name}
-                  </Typography>
+            return (
+              <React.Fragment key={`${file.url}-${index}`}>
+                <ListItem disablePadding>
+                  <ListItemButton
+                    component="a"
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <ListItemIcon>
+                      {getFileIcon(file.name)}
+                    </ListItemIcon>
 
-                  <Chip
-                    label="Download"
-                    size="small"
-                    sx={{
-                      ml: 'auto',
-                      background:
-                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                      color: 'white',
-                    }}
-                  />
-                </ListItemButton>
-              </ListItem>
+                    <Typography sx={{ fontWeight: 600 }}>
+                      {file.name}
+                    </Typography>
 
-              {index < attachments.length - 1 && (
-                <Box sx={{ borderBottom: '1px solid #eee' }} />
-              )}
-            </React.Fragment>
-          ))}
+                    <Chip
+                      label="Download"
+                      size="small"
+                      sx={{
+                        ml: 'auto',
+                        background:
+                          'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        color: 'white',
+                      }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+
+                {index < attachments.length - 1 && (
+                  <Box sx={{ borderBottom: '1px solid #eee' }} />
+                )}
+              </React.Fragment>
+            );
+          })}
         </List>
       </Paper>
     </Box>
   );
 }
+
