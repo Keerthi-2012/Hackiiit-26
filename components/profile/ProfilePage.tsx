@@ -1,666 +1,3 @@
-// "use client";
-
-// import React, { useEffect, useState } from "react";
-// import {
-//   Box,
-//   Container,
-//   Paper,
-//   Stack,
-//   Typography,
-//   Button,
-//   Avatar,
-//   Chip,
-//   CircularProgress,
-//   Alert,
-//   Grid,
-//   Divider,
-// } from "@mui/material";
-
-// import EditIcon from "@mui/icons-material/Edit";
-// import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-// import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-// import ArticleIcon from "@mui/icons-material/Article";
-// import AddIcon from "@mui/icons-material/Add";
-// import EmailIcon from "@mui/icons-material/Email";
-// import WorkIcon from "@mui/icons-material/Work";
-// import LabelIcon from "@mui/icons-material/Label";
-
-// import { useRouter } from "next/navigation";
-
-// import EditProfileModal from "./EditProfileModal";
-// import AddBlogModal from "@/components/profile/AddBlogModal";
-
-// type User = {
-//   name: string;
-//   email: string;
-//   lab?: string;
-//   researchArea?: string;
-// };
-
-// interface ProfileStats {
-//   queries: number;
-//   answers: number;
-//   blogs: number;
-// }
-
-// export default function ProfilePage() {
-//   const router = useRouter();
-
-//   const [user, setUser] = useState<User | null>(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
-
-//   const [showEdit, setShowEdit] = useState(false);
-//   const [showAddBlog, setShowAddBlog] = useState(false);
-
-//   // 🔹 Mock stats for now (replace later with backend)
-//   const [stats] = useState<ProfileStats>({
-//     queries: 12,
-//     answers: 28,
-//     blogs: 5,
-//   });
-
-//   useEffect(() => {
-//     async function fetchProfile() {
-//       try {
-//         const res = await fetch("/api/profile", {
-//           credentials: "include",
-//         });
-//         if (!res.ok) throw new Error("Failed to load profile");
-//         const data = await res.json();
-//         setUser(data.user);
-//       } catch {
-//         setError("Could not load profile");
-//       } finally {
-//         setLoading(false);
-//       }
-//     }
-//     fetchProfile();
-//   }, []);
-
-//   const getInitials = (name: string) =>
-//     name
-//       .split(" ")
-//       .map((n) => n[0])
-//       .join("")
-//       .toUpperCase();
-
-//   if (loading) {
-//     return (
-//       <Box
-//         sx={{
-//           display: "flex",
-//           justifyContent: "center",
-//           alignItems: "center",
-//           minHeight: "60vh",
-//         }}
-//       >
-//         <CircularProgress />
-//       </Box>
-//     );
-//   }
-
-//   if (error || !user) {
-//     return (
-//       <Container maxWidth="md" sx={{ py: 4 }}>
-//         <Alert severity="error">{error || "Failed to load profile"}</Alert>
-//       </Container>
-//     );
-//   }
-
-//   const researchAreas = user.researchArea
-//     ? user.researchArea.split(",").map((t) => t.trim())
-//     : [];
-
-//   return (
-//     <Container maxWidth="md" sx={{ py: 6 }}>
-//       <Stack spacing={4}>
-//         {/* =========================
-//             Profile Header
-//         ========================= */}
-//         <Paper
-//           sx={{
-//             borderRadius: 3,
-//             overflow: "hidden",
-//             background: "linear-gradient(135deg, #667eea, #764ba2)",
-//           }}
-//         >
-//           <Box sx={{ p: 4, color: "white" }}>
-//             <Stack
-//               direction="row"
-//               justifyContent="space-between"
-//               alignItems="center"
-//               flexWrap="wrap"
-//               gap={2}
-//             >
-//               <Stack direction="row" spacing={3} alignItems="center">
-//                 <Avatar
-//                   sx={{
-//                     width: 90,
-//                     height: 90,
-//                     fontSize: "2rem",
-//                     fontWeight: 700,
-//                     background: "rgba(255,255,255,0.25)",
-//                   }}
-//                 >
-//                   {getInitials(user.name)}
-//                 </Avatar>
-//                 <Box>
-//                   <Typography variant="h4" fontWeight={700}>
-//                     {user.name}
-//                   </Typography>
-//                   <Typography variant="body2">
-//                     Research Profile
-//                   </Typography>
-//                 </Box>
-//               </Stack>
-
-//               <Button
-//                 startIcon={<EditIcon />}
-//                 onClick={() => setShowEdit(true)}
-//                 sx={{
-//                   color: "white",
-//                   background: "rgba(255,255,255,0.2)",
-//                   textTransform: "none",
-//                   fontWeight: 600,
-//                   "&:hover": {
-//                     background: "rgba(255,255,255,0.3)",
-//                   },
-//                 }}
-//               >
-//                 Edit Profile
-//               </Button>
-//             </Stack>
-//           </Box>
-//         </Paper>
-
-//         {/* =========================
-//             Stats
-//         ========================= */}
-//         <Grid container spacing={2}>
-//           {[
-//             {
-//               label: "Queries Asked",
-//               value: stats.queries,
-//               icon: <HelpOutlineIcon sx={{ fontSize: 32, color: "#667eea" }} />,
-//             },
-//             {
-//               label: "Answers Provided",
-//               value: stats.answers,
-//               icon: (
-//                 <CheckCircleOutlineIcon
-//                   sx={{ fontSize: 32, color: "#388e3c" }}
-//                 />
-//               ),
-//             },
-//             {
-//               label: "Blogs Written",
-//               value: stats.blogs,
-//               icon: <ArticleIcon sx={{ fontSize: 32, color: "#f57c00" }} />,
-//             },
-//           ].map((stat) => (
-//             <Grid item xs={12} sm={4} key={stat.label}>
-//               <Paper sx={{ p: 2.5, textAlign: "center" }}>
-//                 {stat.icon}
-//                 <Typography variant="h5" fontWeight={700}>
-//                   {stat.value}
-//                 </Typography>
-//                 <Typography variant="body2">{stat.label}</Typography>
-//               </Paper>
-//             </Grid>
-//           ))}
-//         </Grid>
-
-//         {/* =========================
-//             Profile Info
-//         ========================= */}
-//         <Paper sx={{ p: 3 }}>
-//           <Typography variant="h6" fontWeight={700} mb={2}>
-//             Profile Information
-//           </Typography>
-
-//           <Stack spacing={2}>
-//             <InfoRow icon={<EmailIcon />} label="Email" value={user.email} />
-//             <Divider />
-//             <InfoRow
-//               icon={<WorkIcon />}
-//               label="Lab"
-//               value={user.lab || "Not specified"}
-//             />
-//             <Divider />
-//             <Box>
-//               <Typography variant="caption" fontWeight={600}>
-//                 Research Areas
-//               </Typography>
-//               {researchAreas.length ? (
-//                 <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
-//                   {researchAreas.map((area) => (
-//                     <Chip key={area} label={area} size="small" />
-//                   ))}
-//                 </Stack>
-//               ) : (
-//                 <Typography variant="body2" color="text.secondary">
-//                   Not specified
-//                 </Typography>
-//               )}
-//             </Box>
-//           </Stack>
-//         </Paper>
-
-//         {/* =========================
-//             Actions
-//         ========================= */}
-//         <Grid container spacing={2}>
-//           <ActionButton
-//             icon={<HelpOutlineIcon />}
-//             label="My Queries"
-//             onClick={() => router.push("/profile/my-queries")}
-//           />
-//           <ActionButton
-//             icon={<CheckCircleOutlineIcon />}
-//             label="Answered"
-//             onClick={() => router.push("/profile/answered")}
-//           />
-//           <ActionButton
-//             icon={<ArticleIcon />}
-//             label="My Blogs"
-//             onClick={() => router.push("/profile/blogs")}
-//           />
-//           <ActionButton
-//             icon={<AddIcon />}
-//             label="Add Blog"
-//             variant="contained"
-//             onClick={() => setShowAddBlog(true)}
-//           />
-//         </Grid>
-
-//         {/* =========================
-//             Modals
-//         ========================= */}
-//         {showEdit && (
-//           <EditProfileModal
-//             user={user}
-//             onClose={() => setShowEdit(false)}
-//           />
-//         )}
-
-//         {showAddBlog && (
-//           <AddBlogModal onClose={() => setShowAddBlog(false)} />
-//         )}
-//       </Stack>
-//     </Container>
-//   );
-// }
-
-// /* =========================
-//    Helper Components
-// ========================= */
-
-// function InfoRow({
-//   icon,
-//   label,
-//   value,
-// }: {
-//   icon: React.ReactNode;
-//   label: string;
-//   value: string;
-// }) {
-//   return (
-//     <Stack direction="row" spacing={2} alignItems="center">
-//       {icon}
-//       <Box>
-//         <Typography variant="caption" fontWeight={600}>
-//           {label}
-//         </Typography>
-//         <Typography variant="body2">{value}</Typography>
-//       </Box>
-//     </Stack>
-//   );
-// }
-
-// function ActionButton({
-//   icon,
-//   label,
-//   onClick,
-//   variant = "outlined",
-// }: {
-//   icon: React.ReactNode;
-//   label: string;
-//   onClick: () => void;
-//   variant?: "outlined" | "contained";
-// }) {
-//   return (
-//     <Grid item xs={12} sm={6} md={3}>
-//       <Button
-//         fullWidth
-//         startIcon={icon}
-//         variant={variant}
-//         onClick={onClick}
-//         sx={{ py: 1.5, textTransform: "none", fontWeight: 600 }}
-//       >
-//         {label}
-//       </Button>
-//     </Grid>
-//   );
-// }
-// "use client";
-
-// import React, { useEffect, useState } from "react";
-// import {
-//   Box,
-//   Container,
-//   Paper,
-//   Stack,
-//   Typography,
-//   Button,
-//   Avatar,
-//   Chip,
-//   CircularProgress,
-//   Alert,
-//   Grid,
-//   Divider,
-// } from "@mui/material";
-
-// import EditIcon from "@mui/icons-material/Edit";
-// import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-// import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-// import ArticleIcon from "@mui/icons-material/Article";
-// import AddIcon from "@mui/icons-material/Add";
-// import EmailIcon from "@mui/icons-material/Email";
-// import WorkIcon from "@mui/icons-material/Work";
-
-// import { useRouter } from "next/navigation";
-
-// import EditProfileModal from "./EditProfileModal";
-// import AddBlogModal from "@/components/profile/AddBlogModal";
-
-// type User = {
-//   name: string;
-//   email: string;
-//   lab?: string;
-//   researchArea?: string;
-// };
-
-// interface ProfileStats {
-//   queries: number;
-//   answers: number;
-//   blogs: number;
-// }
-
-// interface ProfileResponse {
-//   user: User;
-//   stats: ProfileStats;
-// }
-
-// export default function ProfilePage() {
-//   const router = useRouter();
-
-//   const [user, setUser] = useState<User | null>(null);
-//   const [stats, setStats] = useState<ProfileStats | null>(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
-
-//   const [showEdit, setShowEdit] = useState(false);
-//   const [showAddBlog, setShowAddBlog] = useState(false);
-
-//   useEffect(() => {
-//     async function fetchProfile() {
-//       try {
-//         const res = await fetch("/api/profile", {
-//           credentials: "include",
-//         });
-//         if (!res.ok) throw new Error("Failed to load profile");
-//         const data: ProfileResponse = await res.json();
-
-//         setUser(data.user);
-//         setStats(data.stats); // ✅ now stats come from backend
-//       } catch (err) {
-//         console.error(err);
-//         setError("Could not load profile");
-//       } finally {
-//         setLoading(false);
-//       }
-//     }
-//     fetchProfile();
-//   }, []);
-
-//   const getInitials = (name: string) =>
-//     name
-//       .split(" ")
-//       .map((n) => n[0])
-//       .join("")
-//       .toUpperCase();
-
-//   if (loading) {
-//     return (
-//       <Box
-//         sx={{
-//           display: "flex",
-//           justifyContent: "center",
-//           alignItems: "center",
-//           minHeight: "60vh",
-//         }}
-//       >
-//         <CircularProgress />
-//       </Box>
-//     );
-//   }
-
-//   if (error || !user || !stats) {
-//     return (
-//       <Container maxWidth="md" sx={{ py: 4 }}>
-//         <Alert severity="error">{error || "Failed to load profile"}</Alert>
-//       </Container>
-//     );
-//   }
-
-//   const researchAreas = user.researchArea
-//     ? user.researchArea.split(",").map((t) => t.trim())
-//     : [];
-
-//   return (
-//     <Container maxWidth="md" sx={{ py: 6 }}>
-//       <Stack spacing={4}>
-//         {/* Profile Header */}
-//         <Paper
-//           sx={{
-//             borderRadius: 3,
-//             overflow: "hidden",
-//             background: "linear-gradient(135deg, #667eea, #764ba2)",
-//           }}
-//         >
-//           <Box sx={{ p: 4, color: "white" }}>
-//             <Stack
-//               direction="row"
-//               justifyContent="space-between"
-//               alignItems="center"
-//               flexWrap="wrap"
-//               gap={2}
-//             >
-//               <Stack direction="row" spacing={3} alignItems="center">
-//                 <Avatar
-//                   sx={{
-//                     width: 90,
-//                     height: 90,
-//                     fontSize: "2rem",
-//                     fontWeight: 700,
-//                     background: "rgba(255,255,255,0.25)",
-//                   }}
-//                 >
-//                   {getInitials(user.name)}
-//                 </Avatar>
-//                 <Box>
-//                   <Typography variant="h4" fontWeight={700}>
-//                     {user.name}
-//                   </Typography>
-//                   <Typography variant="body2">Research Profile</Typography>
-//                 </Box>
-//               </Stack>
-
-//               <Button
-//                 startIcon={<EditIcon />}
-//                 onClick={() => setShowEdit(true)}
-//                 sx={{
-//                   color: "white",
-//                   background: "rgba(255,255,255,0.2)",
-//                   textTransform: "none",
-//                   fontWeight: 600,
-//                   "&:hover": {
-//                     background: "rgba(255,255,255,0.3)",
-//                   },
-//                 }}
-//               >
-//                 Edit Profile
-//               </Button>
-//             </Stack>
-//           </Box>
-//         </Paper>
-
-//         {/* Stats */}
-//         <Grid container spacing={2}>
-//           {[
-//             {
-//               label: "Queries Asked",
-//               value: stats.queries,
-//               icon: <HelpOutlineIcon sx={{ fontSize: 32, color: "#667eea" }} />,
-//             },
-//             {
-//               label: "Answers Provided",
-//               value: stats.answers,
-//               icon: <CheckCircleOutlineIcon sx={{ fontSize: 32, color: "#388e3c" }} />,
-//             },
-//             {
-//               label: "Blogs Written",
-//               value: stats.blogs,
-//               icon: <ArticleIcon sx={{ fontSize: 32, color: "#f57c00" }} />,
-//             },
-//           ].map((stat) => (
-//             <Grid item xs={12} sm={4} key={stat.label}>
-//               <Paper sx={{ p: 2.5, textAlign: "center" }}>
-//                 {stat.icon}
-//                 <Typography variant="h5" fontWeight={700}>
-//                   {stat.value}
-//                 </Typography>
-//                 <Typography variant="body2">{stat.label}</Typography>
-//               </Paper>
-//             </Grid>
-//           ))}
-//         </Grid>
-
-//         {/* Profile Info */}
-//         <Paper sx={{ p: 3 }}>
-//           <Typography variant="h6" fontWeight={700} mb={2}>
-//             Profile Information
-//           </Typography>
-
-//           <Stack spacing={2}>
-//             <InfoRow icon={<EmailIcon />} label="Email" value={user.email} />
-//             <Divider />
-//             <InfoRow icon={<WorkIcon />} label="Lab" value={user.lab || "Not specified"} />
-//             <Divider />
-//             <Box>
-//               <Typography variant="caption" fontWeight={600}>
-//                 Research Areas
-//               </Typography>
-//               {researchAreas.length ? (
-//                 <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
-//                   {researchAreas.map((area) => (
-//                     <Chip key={area} label={area} size="small" />
-//                   ))}
-//                 </Stack>
-//               ) : (
-//                 <Typography variant="body2" color="text.secondary">
-//                   Not specified
-//                 </Typography>
-//               )}
-//             </Box>
-//           </Stack>
-//         </Paper>
-
-//         {/* Actions */}
-//         <Grid container spacing={2}>
-//           <ActionButton
-//             icon={<HelpOutlineIcon />}
-//             label="My Queries"
-//             onClick={() => router.push("/profile/my-queries")}
-//           />
-//           <ActionButton
-//             icon={<CheckCircleOutlineIcon />}
-//             label="Answered"
-//             onClick={() => router.push("/profile/answered")}
-//           />
-//           <ActionButton
-//             icon={<ArticleIcon />}
-//             label="My Blogs"
-//             onClick={() => router.push("/profile/blogs")}
-//           />
-//           <ActionButton
-//             icon={<AddIcon />}
-//             label="Add Blog"
-//             variant="contained"
-//             onClick={() => setShowAddBlog(true)}
-//           />
-//         </Grid>
-
-//         {/* Modals */}
-//         {showEdit && <EditProfileModal user={user} onClose={() => setShowEdit(false)} />}
-//         {showAddBlog && <AddBlogModal onClose={() => setShowAddBlog(false)} />}
-//       </Stack>
-//     </Container>
-//   );
-// }
-
-// /* =========================
-//    Helper Components
-// ========================= */
-// function InfoRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
-//   return (
-//     <Stack direction="row" spacing={2} alignItems="center">
-//       {icon}
-//       <Box>
-//         <Typography variant="caption" fontWeight={600}>
-//           {label}
-//         </Typography>
-//         <Typography variant="body2">{value}</Typography>
-//       </Box>
-//     </Stack>
-//   );
-// }
-
-// function ActionButton({
-//   icon,
-//   label,
-//   onClick,
-//   variant = "outlined",
-// }: {
-//   icon: React.ReactNode;
-//   label: string;
-//   onClick: () => void;
-//   variant?: "outlined" | "contained";
-// }) {
-//   return (
-//     <Grid item xs={12} sm={6} md={3}>
-//       <Button
-//         fullWidth
-//         startIcon={icon}
-//         variant={variant}
-//         onClick={onClick}
-//         sx={{ py: 1.5, textTransform: "none", fontWeight: 600 }}
-//       >
-//         {label}
-//       </Button>
-//     </Grid>
-//   );
-// }
-
-
-
-
-
-
-
-
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -733,7 +70,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="loader">
-        <CircularProgress />
+        <CircularProgress sx={{ color: "#00f2fe" }} />
       </div>
     );
   }
@@ -741,7 +78,9 @@ export default function ProfilePage() {
   if (error || !user || !stats) {
     return (
       <Container>
-        <Alert severity="error">{error || "Failed to load profile"}</Alert>
+        <Alert severity="error" sx={{ bgcolor: "rgba(239, 68, 68, 0.1)", color: "#fca5a5" }}>
+          {error || "Failed to load profile"}
+        </Alert>
       </Container>
     );
   }
@@ -756,12 +95,12 @@ export default function ProfilePage() {
       <style>{`
         :root {
           --bg: #0f172a;
-          --card: #111827;
-          --border: #1f2933;
-          --text: #e5e7eb;
-          --muted: #9ca3af;
-          --accent: #667eea;
-          --accent-2: #764ba2;
+          --card: #1e293b;
+          --border: rgba(79, 172, 254, 0.15);
+          --text: #e0e7ff;
+          --muted: #94a3b8;
+          --accent: #4facfe;
+          --accent-2: #00f2fe;
         }
 
         body {
@@ -777,52 +116,86 @@ export default function ProfilePage() {
         }
 
         .profile-header {
-          background: linear-gradient(135deg, #1e3c72, #2a5298);
-          /* NEW BLUE GRADIENT */
-
-          border-radius: 16px;
-          padding: 30px 40px;
+          background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+          border: 1px solid rgba(79, 172, 254, 0.2);
+          border-radius: 1rem;
+          padding: 2rem;
           display: flex;
           justify-content: space-between;
           align-items: center;
           color: white;
+          backdrop-filter: blur(10px);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+          animation: floatUp 0.6s ease-out;
+        }
+
+        @keyframes floatUp {
+          0% {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
         .name {
           font-size: 2rem;
-          font-weight: 700;
+          font-weight: 800;
+          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
         }
 
         .sub {
-          font-size: 14px;
+          font-size: 0.9rem;
           opacity: 0.9;
-          margin-top: 4px;
+          margin-top: 0.5rem;
+          color: #cbd5e1;
         }
 
         .edit-btn {
-          background: rgba(255,255,255,0.2);
-          color: white;
-          font-weight: 600;
+          background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+          color: #0f172a;
+          font-weight: 700;
           text-transform: none;
+          box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+          transition: all 0.3s ease;
         }
 
         .edit-btn:hover {
-          background: rgba(255,255,255,0.3);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(79, 172, 254, 0.4);
         }
 
         .card {
-          background: var(--card);
-          border: 1px solid var(--border);
-          border-radius: 14px;
-          padding: 20px;
+          background: rgba(30, 41, 59, 0.6);
+          border: 1px solid rgba(79, 172, 254, 0.2);
+          border-radius: 1rem;
+          padding: 1.5rem;
           text-align: center;
+          backdrop-filter: blur(10px);
+          transition: all 0.3s ease;
+          animation: floatUp 0.6s ease-out;
+        }
+
+        .card:hover {
+          background: rgba(30, 41, 59, 0.8);
+          border-color: rgba(79, 172, 254, 0.4);
+          transform: translateY(-3px);
+          box-shadow: 0 10px 30px rgba(79, 172, 254, 0.15);
         }
 
         .info-card {
-          background: var(--card);
-          border: 1px solid var(--border);
-          border-radius: 14px;
-          padding: 24px;
+          background: rgba(30, 41, 59, 0.6);
+          border: 1px solid rgba(79, 172, 254, 0.2);
+          border-radius: 1rem;
+          padding: 1.5rem;
+          backdrop-filter: blur(10px);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+          animation: floatUp 0.6s ease-out 0.1s backwards;
         }
 
         .muted {
@@ -830,19 +203,43 @@ export default function ProfilePage() {
         }
 
         .chip {
-          background: rgba(102,126,234,0.15);
-          color: var(--accent);
+          background: rgba(79, 172, 254, 0.15);
+          color: #00f2fe;
           font-weight: 600;
+          border: 1px solid rgba(79, 172, 254, 0.3);
         }
 
         .action-btn {
           font-weight: 600;
           text-transform: none;
-          padding: 12px;
+          padding: 0.75rem;
+          background: none;
+          border: 1px solid rgba(79, 172, 254, 0.3);
+          color: #cbd5e1;
+          border-radius: 0.5rem;
+          transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+          background: rgba(79, 172, 254, 0.1);
+          border-color: rgba(79, 172, 254, 0.6);
+          color: #00f2fe;
+        }
+
+        .stat-value {
+          font-size: 1.75rem;
+          font-weight: 800;
+          color: #00f2fe;
+        }
+
+        .stat-label {
+          color: #cbd5e1;
+          font-size: 0.9rem;
+          margin-top: 0.5rem;
         }
       `}</style>
 
-      <Container maxWidth="md">
+      <Container maxWidth="md" sx={{ py: 4 }}>
         <Stack spacing={4}>
           {/* ================= HEADER ================= */}
           <div className="profile-header">
@@ -852,14 +249,11 @@ export default function ProfilePage() {
               alignItems="flex-start"
               flexWrap="wrap"
               gap={2}
+              sx={{ width: "100%" }}
             >
               <div>
                 <div className="name">{user.name}</div>
-
-                <div className="sub">
-                  {user.lab || "No lab specified"}
-                </div>
-
+                <div className="sub">{user.lab || "No lab specified"}</div>
                 <div className="sub">
                   {researchAreas.length
                     ? researchAreas.join(", ")
@@ -871,6 +265,7 @@ export default function ProfilePage() {
                 startIcon={<EditIcon />}
                 className="edit-btn"
                 onClick={() => setShowEdit(true)}
+                variant="contained"
               >
                 Edit Profile
               </Button>
@@ -878,54 +273,47 @@ export default function ProfilePage() {
           </div>
 
           {/* ================= STATS ================= */}
-          {/* <Grid container spacing={2}>
-            <StatCard label="Queries Asked" value={stats.queries} icon={<HelpOutlineIcon />} />
-            <StatCard label="Answers Provided" value={stats.answers} icon={<CheckCircleOutlineIcon />} />
-            <StatCard label="Blogs Written" value={stats.blogs} icon={<ArticleIcon />} />
-          </Grid> */}
-          <Grid container spacing={6}>
-            <Grid item xs={12} sm={6} md={4}>
-              <StatCard
-                label="Queries Asked"
-                value={stats.queries}
-                icon={<HelpOutlineIcon fontSize="large" />}
-                padding="200px"
-                marginleft="500px"
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4}>
-              <StatCard
-                label="Answers Provided"
-                value={stats.answers}
-                icon={<CheckCircleOutlineIcon fontSize="large" />}
-              />
-            </Grid>
-
-            <Grid item xs={12} sm={6} md={4}>
-              <StatCard
-                label="Blogs Written"
-                value={stats.blogs}
-                icon={<ArticleIcon fontSize="large" />}
-              />
-            </Grid>
+          <Grid container spacing={2}>
+            <StatCard
+              label="Queries Asked"
+              value={stats.queries}
+              icon={<HelpOutlineIcon sx={{ fontSize: "2rem", color: "#00f2fe" }} />}
+            />
+            <StatCard
+              label="Answers Provided"
+              value={stats.answers}
+              icon={<CheckCircleOutlineIcon sx={{ fontSize: "2rem", color: "#22c55e" }} />}
+            />
+            <StatCard
+              label="Blogs Written"
+              value={stats.blogs}
+              icon={<ArticleIcon sx={{ fontSize: "2rem", color: "#f97316" }} />}
+            />
           </Grid>
 
           {/* ================= INFO ================= */}
           <div className="info-card">
-            <Typography variant="h6" fontWeight={700} mb={2}>
+            <Typography variant="h6" fontWeight={700} mb={2} sx={{ color: "#e0e7ff" }}>
               Profile Information
             </Typography>
 
             <Stack spacing={2}>
-              <InfoRow icon={<EmailIcon />} label="Email" value={user.email} />
+              <InfoRow icon={<EmailIcon sx={{ color: "#00f2fe" }} />} label="Email" value={user.email} />
             </Stack>
           </div>
 
           {/* ================= ACTIONS ================= */}
           <Grid container spacing={2}>
-            <Action label="My Queries" icon={<HelpOutlineIcon />} onClick={() => router.push("/profile/my-queries")} />
-            <Action label="Answered" icon={<CheckCircleOutlineIcon />} onClick={() => router.push("/profile/answered")} />
+            <Action
+              label="My Queries"
+              icon={<HelpOutlineIcon />}
+              onClick={() => router.push("/profile/my-queries")}
+            />
+            <Action
+              label="Answered"
+              icon={<CheckCircleOutlineIcon />}
+              onClick={() => router.push("/profile/answered")}
+            />
             <Action label="My Blogs" icon={<ArticleIcon />} onClick={() => router.push("/profile/blogs")} />
             <Action label="Add Blog" icon={<AddIcon />} onClick={() => setShowAddBlog(true)} />
           </Grid>
@@ -943,11 +331,11 @@ export default function ProfilePage() {
 ========================= */
 function StatCard({ label, value, icon }: any) {
   return (
-    <Grid item xs={12} sm={4}>
+    <Grid item xs={12} sm={6} md={4}>
       <div className="card">
         <div>{icon}</div>
-        <Typography variant="h5" fontWeight={700}>{value}</Typography>
-        <Typography variant="body2">{label}</Typography>
+        <div className="stat-value">{value}</div>
+        <div className="stat-label">{label}</div>
       </div>
     </Grid>
   );
@@ -958,8 +346,12 @@ function InfoRow({ icon, label, value }: any) {
     <Stack direction="row" spacing={2} alignItems="center">
       {icon}
       <div>
-        <Typography variant="caption" fontWeight={600}>{label}</Typography>
-        <Typography variant="body2">{value}</Typography>
+        <Typography variant="caption" fontWeight={600} sx={{ color: "#00f2fe" }}>
+          {label}
+        </Typography>
+        <Typography variant="body2" sx={{ color: "#cbd5e1" }}>
+          {value}
+        </Typography>
       </div>
     </Stack>
   );
@@ -968,7 +360,16 @@ function InfoRow({ icon, label, value }: any) {
 function Action({ icon, label, onClick }: any) {
   return (
     <Grid item xs={12} sm={6} md={3}>
-      <Button fullWidth startIcon={icon} className="action-btn" onClick={onClick}>
+      <Button
+        fullWidth
+        startIcon={icon}
+        className="action-btn"
+        onClick={onClick}
+        sx={{
+          textTransform: "none",
+          fontWeight: 600,
+        }}
+      >
         {label}
       </Button>
     </Grid>
