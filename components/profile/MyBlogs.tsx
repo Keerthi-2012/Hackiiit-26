@@ -280,14 +280,26 @@ function BlogReadModal({
 }) {
   return (
     <Dialog open onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ fontWeight: 700 }}>{blog.title}</DialogTitle>
+      <DialogTitle sx={{ fontWeight: 700 }}>
+        {blog.title}
+      </DialogTitle>
 
       <DialogContent dividers>
         <Stack spacing={2}>
+          {/* Meta */}
           <Typography variant="body2" color="text.secondary">
             {blog.author} • {blog.createdAt} • {blog.readTime} min read
           </Typography>
 
+          {/* ✅ DESCRIPTION (summary) */}
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 600 }}
+          >
+            {blog.summary}
+          </Typography>
+
+          {/* Full blog content */}
           <Typography
             variant="body1"
             sx={{ whiteSpace: "pre-line", lineHeight: 1.7 }}
@@ -303,6 +315,7 @@ function BlogReadModal({
     </Dialog>
   );
 }
+
 
 /* =========================
    Blogs Page
