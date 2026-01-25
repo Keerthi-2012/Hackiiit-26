@@ -40,7 +40,7 @@ export default function QueryCard({
 
         <h2>{query.title}</h2>
         <p>{query.description}</p>
-
+        <p>{query.author}</p>
         {/* Tags */}
         <div className={styles.tags}>
           {query.tags?.map((tag: string) => (
