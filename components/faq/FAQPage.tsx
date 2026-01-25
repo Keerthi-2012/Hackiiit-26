@@ -1,71 +1,9 @@
-// "use client";
-
-// import { useEffect, useState } from "react";
-// import FAQItem from "./FAQItem";
-// import styles from "./FAQ.module.css";
-
-// type FAQ = {
-//   _id: string;
-//   question: string;
-//   tags?: string[];
-//   exampleQueryIds: string[];
-// };
-
-// export default function FAQPage() {
-//   const [faqs, setFaqs] = useState<FAQ[]>([]);
-//   const [search, setSearch] = useState("");
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     async function fetchFaqs() {
-//       try {
-//         const res = await fetch("/api/faq", { cache: "no-store" });
-//         const data = await res.json();
-//         setFaqs(data);
-//       } catch {
-//         console.error("Failed to load FAQs");
-//       } finally {
-//         setLoading(false);
-//       }
-//     }
-
-//     fetchFaqs();
-//   }, []);
-
-//   const filteredFaqs = faqs.filter((faq) =>
-//     faq.question.toLowerCase().includes(search.toLowerCase())
-//   );
-
-//   return (
-//     <div className={styles.container}>
-//       <h1>Frequently Asked Questions</h1>
-
-//       <input
-//         className={styles.search}
-//         placeholder="Search FAQs..."
-//         value={search}
-//         onChange={(e) => setSearch(e.target.value)}
-//       />
-
-//       {loading && <p>Loading FAQs...</p>}
-//       {!loading && filteredFaqs.length === 0 && <p>No FAQs found.</p>}
-
-//       {filteredFaqs.map((faq) => (
-//         <FAQItem key={faq._id} faq={faq} />
-//       ))}
-//     </div>
-//   );
-// }
-
-
-
 "use client";
 
 import { useEffect, useState } from "react";
+import FAQItem from "./FAQItem";
+import styles from "./FAQ.module.css";
 
-/* =========================
-   Types
-========================= */
 type FAQ = {
   _id: string;
   question: string;
@@ -73,30 +11,6 @@ type FAQ = {
   exampleQueryIds: string[];
 };
 
-/* =========================
-   FAQ Item (Inline)
-========================= */
-function FAQItem({ faq }: { faq: FAQ }) {
-  return (
-    <div className="faq-item">
-      <h3>{faq.question}</h3>
-
-      {faq.tags && faq.tags.length > 0 && (
-        <div className="tags">
-          {faq.tags.map((tag) => (
-            <span key={tag} className="tag">
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* =========================
-   FAQ Page
-========================= */
 export default function FAQPage() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [search, setSearch] = useState("");
@@ -124,105 +38,82 @@ export default function FAQPage() {
 
   return (
     <>
-      {/* ================= CSS ================= */}
+      {/* ========= UI THEME (NO LOGIC CHANGE) ========= */}
       <style>{`
-        :root {
-          --bg: #0b1026;
-          --panel: #121a3a;
-          --card:rgba(255, 255, 255, 0.05);
-          --accent: #2dd4ff;
-          --border: rgba(255,255,255,0.1);
-        }
-
         body {
-          background: radial-gradient(circle at top, #111a3a, var(--bg));
-          margin: 0;
-          font-family: Inter, system-ui, sans-serif;
+          background: radial-gradient(circle at top, #1a2a6c, #0b122b);
         }
 
-        .container {
+        .${styles.container} {
           max-width: 900px;
           margin: 0 auto;
           padding: 60px 20px;
         }
 
-        h1 {
-          color: var(--accent);
-          font-size: 2.4rem;
+        .${styles.container} h1 {
+          text-align: center;
+          font-size: 2.6rem;
           font-weight: 800;
-          margin-bottom: 24px;
+          margin-bottom: 32px;
+          color: white;
         }
 
-        .search {
+        .${styles.search} {
           width: 100%;
           padding: 14px 16px;
-          border-radius: 12px;
-          background: linear-gradient(135deg, #18224a, #101734);
-          border: 1px solid var(--border);
-          color: white;
-          font-size: 1rem;
-          outline: none;
-          margin-bottom: 32px;
-        }
+          margin: 16px 0 24px;
 
-        .search::placeholder {
-          color: #9aa4d6;
-        }
+          background: linear-gradient(
+            180deg,
+            rgba(255,255,255,0.08),
+            rgba(255,255,255,0.04)
+          );
+          backdrop-filter: blur(12px);
 
-        .faq-item {
-          background: var(--card);
           border-radius: 14px;
-          padding: 20px;
-          margin-bottom: 18px;
-          box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+          border: 1px solid rgba(120,160,255,0.35);
+
+          color: white;
+          font-size: 14px;
+          outline: none;
+
+          box-shadow: 0 6px 20px rgba(0,0,0,0.25);
         }
 
-        /* 🔥 FIX: BLACK TEXT */
-        .faq-item * {
-          color: #fff !important;
+        .${styles.search}::placeholder {
+          color: #666;
         }
 
-        .faq-item h3 {
-          font-size: 1.1rem;
-          font-weight: 700;
-          margin-bottom: 10px;
+        .${styles.search}:focus {
+          border-color: #38bdf8;
+          box-shadow: 0 0 0 2px rgba(56,189,248,0.25);
         }
 
-        .tags {
-          display: flex;
-          gap: 8px;
-          flex-wrap: wrap;
+        .${styles.container} p {
+          text-align: center;
+          color: white;
+          margin-top: 20px;
         }
 
-        .tag {
-          background: #e5e7eb;
-          padding: 4px 10px;
-          border-radius: 999px;
-          font-size: 0.75rem;
-          font-weight: 600;
-        }
-
-        .status {
-          color: #9aa4d6;
-          margin-top: 12px;
+        /* FAQItem wrapper polish WITHOUT touching its logic */
+        .${styles.container} > div {
+          margin-bottom: 14px;
         }
       `}</style>
 
-      {/* ================= UI ================= */}
-      <div className="container">
+      {/* ========= PAGE CONTENT ========= */}
+      <div className={styles.container}>
         <h1>Frequently Asked Questions</h1>
 
         <input
-          className="search"
+          className={styles.search}
           placeholder="Search FAQs..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        {loading && <p className="status">Loading FAQs...</p>}
-        {!loading && filteredFaqs.length === 0 && (
-          <p className="status">No FAQs found.</p>
-        )}
+        {loading && <p>Loading FAQs...</p>}
+        {!loading && filteredFaqs.length === 0 && <p>No FAQs found.</p>}
 
         {filteredFaqs.map((faq) => (
           <FAQItem key={faq._id} faq={faq} />

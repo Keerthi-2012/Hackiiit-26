@@ -8,7 +8,7 @@ import {
   Person as PersonIcon,
 } from "@mui/icons-material";
 import LogoutIcon from "@mui/icons-material/Logout";
-
+import { usePathname } from "next/navigation";
 
 const navbarStyles = `
   * {
@@ -141,6 +141,10 @@ const navItems = [
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+    const pathname = usePathname();
+
+  // ❌ Do not render Navbar on landing page
+  if (pathname === "/") return null;
     useEffect(() => {
   const forceHome = () => {
     window.location.replace("/");

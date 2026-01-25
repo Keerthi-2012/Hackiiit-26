@@ -4,20 +4,46 @@
   padding: 20px;
 }
 
+/* Search bar stays light */
 .search {
   width: 100%;
-  padding: 10px;
-  margin: 16px 0;
-  border: 1px solid #ccc;
+  padding: 14px 16px;
+  margin: 16px 0 24px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.08),
+    rgba(255,255,255,0.04)
+  );
+  backdrop-filter: blur(12px);
+
+  border-radius: 14px;
+  border: 1px solid rgba(120,160,255,0.35);
+
+  color: white;
+  font-size: 14px;
+  outline: none;
+
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
 
+
+/* 🔥 FAQ CARD (NO MORE WHITE) */
 .item {
-  border: 1px solid #ddd;
-  background: white;
-  padding: 14px;
-  margin-bottom: 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.08),
+    rgba(255,255,255,0.03)
+  );
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(120,160,255,0.25);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 
+/* Question text */
 .question {
   width: 100%;
   background: none;
@@ -26,23 +52,30 @@
   font-weight: 600;
   text-align: left;
   cursor: pointer;
+  color: white;
 }
 
+/* Answer text */
 .answer {
   margin-top: 10px;
-  color: #444;
+  color: #e5e7eb;
+  line-height: 1.6;
 }
 
+/* Tags container */
 .tags {
-  margin-top: 8px;
+  margin-top: 10px;
   display: flex;
   gap: 6px;
   flex-wrap: wrap;
 }
 
+/* Individual tag */
 .tag {
-  background: #f0f0f0;
-  padding: 4px 8px;
+  background: rgba(56,189,248,0.18);
+  color: #38bdf8;
+  padding: 4px 10px;
   font-size: 12px;
-  border-radius: 4px;
+  border-radius: 999px;
+  font-weight: 600;
 }
