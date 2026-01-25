@@ -56,3 +56,75 @@ export async function GET(request) { // returns all the questions asked by user
     return NextResponse.json({ error: "Failed to fetch user queries" }, { status: 500 });
   }
 }
+import mongoose from "mongoose"; // ✅ default import
+
+
+export async function DELETE(req) {
+  try {
+    await connectToDatabase();
+
+    // ✅ get token correctly in App Router route
+    // const cookieStore = cookies();
+    // const token = cookieStore.get("token")?.value;
+
+    // if (!token) {
+    //   return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    // }
+
+    // // Verify token
+    // let decoded;
+    // try {
+    //   decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // } catch {
+    //   return NextResponse.json({ message: "Invalid token" }, { status: 401 });
+    // }
+
+    // const userId = decoded.userId;
+    // if (!userId) {
+    //   return NextResponse.json({ message: "Invalid user" }, { status: 401 });
+    // }
+      const cookieStore = await cookies();
+      const token = cookieStore.get("token")?.value;
+  
+      if (!token) {
+        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      }
+  
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const userId = decoded.userId;
+  
+    if (!userId) {
+      return NextResponse.json({ error: "userId is required" }, { status: 400 });
+    }
+
+    const body = await req.json();
+    const queryId = body?.id;
+
+    if (!queryId) {
+      return NextResponse.json({ message: "Query ID missing" }, { status: 400 });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(queryId)) {
+      return NextResponse.json({ message: "Invalid query ID" }, { status: 400 });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return NextResponse.json({ message: "Invalid user ID" }, { status: 400 });
+    }
+
+    const query = await Query.findOne({
+      _id: new mongoose.Types.ObjectId(queryId),
+      user: new mongoose.Types.ObjectId(userId),
+    });
+
+    if (!query) {
+      return NextResponse.json({ message: "Query not found" }, { status: 404 });
+    }
+
+    await query.deleteOne();
+    return NextResponse.json({ message: "Query deleted successfully" });
+  } catch (err) {
+    console.error("DELETE ERROR:", err);
+    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+  }
+}
