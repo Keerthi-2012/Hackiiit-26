@@ -10,7 +10,7 @@ const BlogSchema = new mongoose.Schema({
   content: { type: String, required: true },
   summary: { type: String },
   createdAt: { type: Date, default: Date.now },
-});
+}, {collection:"Blog"});
 
 export default mongoose.models.Blog ||
   mongoose.model("Blog", BlogSchema);
