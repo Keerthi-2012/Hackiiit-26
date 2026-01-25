@@ -69,7 +69,7 @@ The system balances open discussion with long-term knowledge consolidation, maki
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/your-username/research-discuss.git
+git clone https://github.com/hackiiit/hackiiit-26-team-south-mess.git
 cd research-discuss
 ```
 
@@ -82,6 +82,7 @@ npm install
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
+
 ```
 ### 4. Run the development server
 ```bash
