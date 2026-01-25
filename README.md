@@ -71,3 +71,53 @@ The system balances open discussion with long-term knowledge consolidation, maki
 ```bash
 git clone https://github.com/your-username/research-discuss.git
 cd research-discuss
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+### 3. Create environment variables
+```bash
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
+### 4. Run the development server
+```bash
+npm run dev
+```
+### 5. Open in a browser
+```bash
+http://localhost:3000
+```
+## Previous Work / References
+
+- Conceptual inspiration from:
+  - Stack Overflow (question–answer structure)
+  - Academic and research discussion forums
+- No existing open-source project was directly forked or used as a base
+- UI components were implemented using Material UI
+
+---
+
+## AI Tool Usage Disclosure
+
+AI tools were used responsibly during development:
+
+- **ChatGPT**
+  - Code debugging and refactoring assistance
+  - UI/UX improvement suggestions
+  - README drafting and documentation structuring
+  - Error diagnosis and explanation
+
+All AI-generated outputs were reviewed, modified, and manually integrated.  
+No AI-generated code was used without verification or understanding.
+
+---
+
+## Security and Privacy Notice
+
+- No `.env` files or API keys are committed to the repository
+- No secrets or credentials are exposed
+- All sensitive configuration is managed through environment variables
