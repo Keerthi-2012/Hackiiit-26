@@ -367,11 +367,6 @@ export default function QueryHeader({
 
         <div className="query-meta">
           <div className="query-left">
-            <div className="author">
-              <div className="author-icon">👤</div>
-              <span>{author}</span>
-            </div>
-
             <span className="dot">•</span>
 
             <div className="tags">

@@ -253,9 +253,10 @@ export default function ProfilePage() {
             >
               <div>
                 <div className="name">{user.name}</div>
-                <div className="sub">{user.lab || "No lab specified"}</div>
+                <div className="sub">{user.email}</div>
+                <div className="sub">Lab - {user.lab || "No lab specified"}</div>
                 <div className="sub">
-                  {researchAreas.length
+                  Intrested Research Areas - {researchAreas.length
                     ? researchAreas.join(", ")
                     : "No research areas specified"}
                 </div>
@@ -290,18 +291,6 @@ export default function ProfilePage() {
               icon={<ArticleIcon sx={{ fontSize: "2rem", color: "#f97316" }} />}
             />
           </Grid>
-
-          {/* ================= INFO ================= */}
-          <div className="info-card">
-            <Typography variant="h6" fontWeight={700} mb={2} sx={{ color: "#e0e7ff" }}>
-              Profile Information
-            </Typography>
-
-            <Stack spacing={2}>
-              <InfoRow icon={<EmailIcon sx={{ color: "#00f2fe" }} />} label="Email" value={user.email} />
-            </Stack>
-          </div>
-
           {/* ================= ACTIONS ================= */}
           <Grid container spacing={2}>
             <Action

@@ -91,6 +91,318 @@
 //   );
 // }
 
+// 'use client';
+
+// import React, { useState } from 'react';
+// import {
+//   Dialog,
+//   DialogTitle,
+//   DialogContent,
+//   DialogActions,
+//   TextField,
+//   Button,
+//   Box,
+//   Typography,
+//   Stack,
+//   Chip,
+//   CircularProgress,
+//   IconButton,
+// } from '@mui/material';
+// import CloseIcon from '@mui/icons-material/Close';
+// import SaveIcon from '@mui/icons-material/Save';
+
+// interface User {
+//   name: string;
+//   email: string;
+//   lab?: string;
+//   researchArea?: string;
+// }
+
+// interface EditProfileModalProps {
+//   user?: User;
+//   onClose: () => void;
+// }
+
+// const INTERESTS: string[] = [
+//   'Machine Learning',
+//   'Systems',
+//   'VLSI',
+//   'Theory',
+//   'Computer Vision',
+//   'NLP',
+//   'Databases',
+//   'Networks',
+//   'Security',
+//   'Distributed Systems',
+//   'Algorithms',
+//   'Optimization',
+//   'Robotics',
+//   'HCI',
+//   'Bioinformatics',
+// ];
+
+// export default function EditProfileModal({ user, onClose }: EditProfileModalProps) {
+//   const [name, setName] = useState<string>(user?.name || '');
+//   const [lab, setLab] = useState<string>(user?.lab || '');
+//   const [selected, setSelected] = useState<string[]>(
+//     user?.researchArea ? user.researchArea.split(',').map((a: string) => a.trim()) : []
+//   );
+//   const [saving, setSaving] = useState<boolean>(false);
+//   const [error, setError] = useState<string>('');
+
+//   const toggleInterest = (tag: string): void => {
+//     setSelected((prev: string[]) =>
+//       prev.includes(tag) ? prev.filter((t: string) => t !== tag) : [...prev, tag]
+//     );
+//   };
+
+//   const saveChanges = async (): Promise<void> => {
+//     if (!name.trim()) {
+//       setError('Name is required');
+//       return;
+//     }
+
+//     setSaving(true);
+//     setError('');
+
+//     try {
+//       const response = await fetch('/api/profile', {
+//         method: 'PUT',
+//         credentials: 'include',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           name: name.trim(),
+//           lab: lab.trim(),
+//           researchArea: selected.join(', '),
+//         }),
+//       });
+
+//       if (!response.ok) {
+//         throw new Error('Failed to save profile');
+//       }
+
+//       const data = await response.json();
+//       console.log('Profile updated:', data);
+
+//       onClose();
+//     } catch (err) {
+//       setError('Could not save changes. Please try again.');
+//       console.error('Error saving profile:', err);
+//     } finally {
+//       setSaving(false);
+//     }
+//   };
+
+//   const isFormValid = name.trim().length > 0;
+
+//   return (
+//     <Dialog
+//       open={true}
+//       onClose={onClose}
+//       maxWidth="sm"
+//       fullWidth
+//       PaperProps={{
+//         sx: {
+//           borderRadius: 2,
+//         },
+//       }}
+//     >
+//       {/* Header */}
+//       <DialogTitle
+//         sx={{
+//           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+//           color: 'white',
+//           fontWeight: 700,
+//           fontSize: '1.5rem',
+//           display: 'flex',
+//           justifyContent: 'space-between',
+//           alignItems: 'center',
+//           pr: 1,
+//           mb: 3,
+//         }}
+//       >
+//         Edit Profile
+//         <IconButton
+//           onClick={onClose}
+//           disabled={saving}
+//           size="small"
+//           sx={{
+//             color: 'white',
+//             '&:hover': {
+//               backgroundColor: 'rgba(255, 255, 255, 0.2)',
+//             },
+//           }}
+//         >
+//           <CloseIcon />
+//         </IconButton>
+//       </DialogTitle>
+
+//       {/* Content */}
+//       <DialogContent sx={{ pt: 3 }}>
+//         <Stack spacing={3}>
+//           {/* Error Message */}
+//           {error && (
+//             <Typography
+//               variant="body2"
+//               sx={{
+//                 color: '#d32f2f',
+//                 backgroundColor: '#ffebee',
+//                 p: 1.5,
+//                 borderRadius: 1,
+//               }}
+//             >
+//               {error}
+//             </Typography>
+//           )}
+
+//           {/* Name Input */}
+//           <TextField
+//             fullWidth
+//             placeholder="Enter your name"
+//             value={name}
+//             onChange={(e) => setName(e.target.value)}
+//             disabled={saving}
+//             variant="outlined"
+//             sx={{
+//               '& .MuiOutlinedInput-root': {
+//                 '&:hover fieldset': {
+//                   borderColor: '#667eea',
+//                 },
+//                 '&.Mui-focused fieldset': {
+//                   borderColor: '#667eea',
+//                   borderWidth: 2,
+//                 },
+//               },
+//             }}
+//           />
+
+//           {/* Lab Input */}
+//           <TextField
+//             fullWidth
+//             label="Lab"
+//             placeholder="Enter your lab name"
+//             value={lab}
+//             onChange={(e) => setLab(e.target.value)}
+//             disabled={saving}
+//             variant="outlined"
+//             sx={{
+//               '& .MuiOutlinedInput-root': {
+//                 '&:hover fieldset': {
+//                   borderColor: '#667eea',
+//                 },
+//                 '&.Mui-focused fieldset': {
+//                   borderColor: '#667eea',
+//                   borderWidth: 2,
+//                 },
+//               },
+//             }}
+//           />
+
+//           {/* Research Interests */}
+//           <Box>
+//             <Typography
+//               variant="subtitle2"
+//               sx={{
+//                 fontWeight: 700,
+//                 mb: 2,
+//                 color: '#333',
+//               }}
+//             >
+//               Research Interests
+//             </Typography>
+//             <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+//               {INTERESTS.map((tag: string) => (
+//                 <Chip
+//                   key={tag}
+//                   label={tag}
+//                   onClick={() => toggleInterest(tag)}
+//                   disabled={saving}
+//                   variant={selected.includes(tag) ? 'filled' : 'outlined'}
+//                   sx={{
+//                     backgroundColor: selected.includes(tag) ? '#667eea' : 'transparent',
+//                     color: selected.includes(tag) ? 'white' : '#667eea',
+//                     fontWeight: 600,
+//                     cursor: saving ? 'not-allowed' : 'pointer',
+//                     borderColor: '#667eea',
+//                     height: 32,
+//                     transition: 'all 0.2s ease',
+//                     '&:hover': {
+//                       backgroundColor: selected.includes(tag) ? '#667eea' : '#e8eef7',
+//                       opacity: saving ? 0.6 : 1,
+//                       transform: saving ? 'none' : 'scale(1.05)',
+//                     },
+//                   }}
+//                 />
+//               ))}
+//             </Stack>
+//             {selected.length > 0 && (
+//               <Typography
+//                 variant="caption"
+//                 sx={{
+//                   color: '#667eea',
+//                   fontWeight: 600,
+//                   mt: 1.5,
+//                   display: 'block',
+//                 }}
+//               >
+//                 {selected.length} selected
+//               </Typography>
+//             )}
+//           </Box>
+//         </Stack>
+//       </DialogContent>
+
+//       {/* Actions */}
+//       <DialogActions
+//         sx={{
+//           p: 2,
+//           backgroundColor: '#f9fafb',
+//           borderTop: '1px solid #e0e0e0',
+//           gap: 1,
+//         }}
+//       >
+//         <Button
+//           onClick={onClose}
+//           disabled={saving}
+//           sx={{
+//             textTransform: 'none',
+//             fontWeight: 600,
+//             color: '#666',
+//             '&:hover': {
+//               backgroundColor: '#f0f0f0',
+//             },
+//           }}
+//         >
+//           Cancel
+//         </Button>
+//         <Button
+//           onClick={saveChanges}
+//           disabled={!isFormValid || saving}
+//           variant="contained"
+//           startIcon={saving ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
+//           sx={{
+//             textTransform: 'none',
+//             fontWeight: 600,
+//             background: isFormValid && !saving
+//               ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+//               : '#ccc',
+//             color: 'white',
+//             '&:hover': {
+//               opacity: 0.9,
+//             },
+//           }}
+//         >
+//           {saving ? 'Saving...' : 'Save Changes'}
+//         </Button>
+//       </DialogActions>
+//     </Dialog>
+//   );
+// }
+
+
+
 'use client';
 
 import React, { useState } from 'react';
@@ -206,14 +518,17 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
       PaperProps={{
         sx: {
           borderRadius: 2,
+          background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+          border: '1px solid rgba(79, 172, 254, 0.2)',
+          backdropFilter: 'blur(10px)',
         },
       }}
     >
       {/* Header */}
       <DialogTitle
         sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
+          background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+          color: '#0f172a',
           fontWeight: 700,
           fontSize: '1.5rem',
           display: 'flex',
@@ -221,6 +536,7 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
           alignItems: 'center',
           pr: 1,
           mb: 3,
+          boxShadow: '0 4px 15px rgba(79, 172, 254, 0.3)',
         }}
       >
         Edit Profile
@@ -229,9 +545,9 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
           disabled={saving}
           size="small"
           sx={{
-            color: 'white',
+            color: '#0f172a',
             '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              backgroundColor: 'rgba(15, 23, 42, 0.2)',
             },
           }}
         >
@@ -247,8 +563,9 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
             <Typography
               variant="body2"
               sx={{
-                color: '#d32f2f',
-                backgroundColor: '#ffebee',
+                color: '#fca5a5',
+                backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
                 p: 1.5,
                 borderRadius: 1,
               }}
@@ -267,13 +584,22 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
             variant="outlined"
             sx={{
               '& .MuiOutlinedInput-root': {
+                color: '#e0e7ff',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                '& fieldset': {
+                  borderColor: 'rgba(79, 172, 254, 0.3)',
+                },
                 '&:hover fieldset': {
-                  borderColor: '#667eea',
+                  borderColor: 'rgba(79, 172, 254, 0.6)',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#667eea',
+                  borderColor: 'rgba(79, 172, 254, 0.8)',
                   borderWidth: 2,
                 },
+              },
+              '& .MuiOutlinedInput-input::placeholder': {
+                color: 'rgba(255, 255, 255, 0.4)',
+                opacity: 1,
               },
             }}
           />
@@ -287,15 +613,32 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
             onChange={(e) => setLab(e.target.value)}
             disabled={saving}
             variant="outlined"
+            InputLabelProps={{
+              sx: {
+                color: '#cbd5e1',
+                '&.Mui-focused': {
+                  color: '#00f2fe',
+                },
+              },
+            }}
             sx={{
               '& .MuiOutlinedInput-root': {
+                color: '#e0e7ff',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                '& fieldset': {
+                  borderColor: 'rgba(79, 172, 254, 0.3)',
+                },
                 '&:hover fieldset': {
-                  borderColor: '#667eea',
+                  borderColor: 'rgba(79, 172, 254, 0.6)',
                 },
                 '&.Mui-focused fieldset': {
-                  borderColor: '#667eea',
+                  borderColor: 'rgba(79, 172, 254, 0.8)',
                   borderWidth: 2,
                 },
+              },
+              '& .MuiOutlinedInput-input::placeholder': {
+                color: 'rgba(255, 255, 255, 0.4)',
+                opacity: 1,
               },
             }}
           />
@@ -307,12 +650,12 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
               sx={{
                 fontWeight: 700,
                 mb: 2,
-                color: '#333',
+                color: '#e0e7ff',
               }}
             >
               Research Interests
             </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={1} sx={{ flexWrap: 'wrap' }} useFlexGap>
               {INTERESTS.map((tag: string) => (
                 <Chip
                   key={tag}
@@ -321,17 +664,18 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
                   disabled={saving}
                   variant={selected.includes(tag) ? 'filled' : 'outlined'}
                   sx={{
-                    backgroundColor: selected.includes(tag) ? '#667eea' : 'transparent',
-                    color: selected.includes(tag) ? 'white' : '#667eea',
+                    backgroundColor: selected.includes(tag) ? '#4facfe' : 'transparent',
+                    color: selected.includes(tag) ? '#0f172a' : '#00f2fe',
                     fontWeight: 600,
                     cursor: saving ? 'not-allowed' : 'pointer',
-                    borderColor: '#667eea',
+                    borderColor: '#4facfe',
                     height: 32,
                     transition: 'all 0.2s ease',
                     '&:hover': {
-                      backgroundColor: selected.includes(tag) ? '#667eea' : '#e8eef7',
+                      backgroundColor: selected.includes(tag) ? '#4facfe' : 'rgba(79, 172, 254, 0.15)',
                       opacity: saving ? 0.6 : 1,
                       transform: saving ? 'none' : 'scale(1.05)',
+                      borderColor: '#00f2fe',
                     },
                   }}
                 />
@@ -341,7 +685,7 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
               <Typography
                 variant="caption"
                 sx={{
-                  color: '#667eea',
+                  color: '#00f2fe',
                   fontWeight: 600,
                   mt: 1.5,
                   display: 'block',
@@ -358,8 +702,8 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
       <DialogActions
         sx={{
           p: 2,
-          backgroundColor: '#f9fafb',
-          borderTop: '1px solid #e0e0e0',
+          backgroundColor: 'rgba(30, 41, 59, 0.4)',
+          borderTop: '1px solid rgba(79, 172, 254, 0.1)',
           gap: 1,
         }}
       >
@@ -369,11 +713,15 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
           sx={{
             textTransform: 'none',
             fontWeight: 600,
-            color: '#666',
+            color: '#cbd5e1',
+            border: '1px solid rgba(79, 172, 254, 0.3)',
+            transition: 'all 0.3s ease',
             '&:hover': {
-              backgroundColor: '#f0f0f0',
+              backgroundColor: 'rgba(79, 172, 254, 0.1)',
+              borderColor: 'rgba(79, 172, 254, 0.6)',
             },
           }}
+          variant="outlined"
         >
           Cancel
         </Button>
@@ -381,16 +729,36 @@ export default function EditProfileModal({ user, onClose }: EditProfileModalProp
           onClick={saveChanges}
           disabled={!isFormValid || saving}
           variant="contained"
-          startIcon={saving ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
+          startIcon={
+            saving ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              <SaveIcon />
+            )
+          }
           sx={{
             textTransform: 'none',
             fontWeight: 600,
-            background: isFormValid && !saving
-              ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-              : '#ccc',
-            color: 'white',
+            background:
+              isFormValid && !saving
+                ? 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+                : 'rgba(255, 255, 255, 0.1)',
+            color:
+              isFormValid && !saving
+                ? '#0f172a'
+                : 'rgba(255, 255, 255, 0.5)',
+            boxShadow:
+              isFormValid && !saving
+                ? '0 4px 15px rgba(79, 172, 254, 0.3)'
+                : 'none',
+            transition: 'all 0.3s ease',
             '&:hover': {
-              opacity: 0.9,
+              opacity:
+                isFormValid && !saving ? 0.9 : 1,
+              boxShadow:
+                isFormValid && !saving
+                  ? '0 6px 20px rgba(79, 172, 254, 0.4)'
+                  : 'none',
             },
           }}
         >
