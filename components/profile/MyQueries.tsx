@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import QueryCard from "@/components/dashboard/QueryCard";
 
 type Query = {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   tags: string[];
@@ -31,6 +31,24 @@ export default function MyQueriesPage() {
     fetchQueries();
   }, []);
 
+  async function handleDelete(queryId: string) {
+    const confirmed = confirm("Are you sure you want to delete this query?");
+    if (!confirmed) return;
+
+    const res = await fetch(`/api/query/${queryId}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!res.ok) {
+      alert("Failed to delete query");
+      return;
+    }
+
+    // Remove from UI
+    setQueries((prev) => prev.filter((q) => q._id !== queryId));
+  }
+
   if (loading) return <p>Loading...</p>;
 
   return (
@@ -39,12 +57,21 @@ export default function MyQueriesPage() {
 
       {queries.length === 0 && <p>No queries found</p>}
 
-      {queries.map(q => (
-        <QueryCard
-          key={q.id}
-          query={{ ...q, answers: q.replyCount }}
-        />
-      ))}
+      {queries.map((q) => (
+  <QueryCard
+    key={q.id}
+    query={{ ...q, _id: q.id }}
+    showDelete
+    onDelete={async () => {
+      await fetch(`/api/query/${q.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      setQueries((prev) => prev.filter((x) => x.id !== q.id));
+    }}
+  />
+))}
+
     </div>
   );
 }
