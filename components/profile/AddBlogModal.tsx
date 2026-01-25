@@ -2,12 +2,17 @@
 
 import { useState } from "react";
 
-export default function AddBlogModal({ onClose }: { onClose: () => void }) {
+export default function AddBlogModal({
+  onClose,
+}: {
+  onClose: () => void;
+}) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
   function submit() {
     console.log({ title, content });
+    // later → POST /api/blog
     onClose();
   }
 
@@ -20,6 +25,7 @@ export default function AddBlogModal({ onClose }: { onClose: () => void }) {
           placeholder="Blog title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          style={{ width: "100%", marginBottom: 8 }}
         />
 
         <textarea
@@ -27,6 +33,7 @@ export default function AddBlogModal({ onClose }: { onClose: () => void }) {
           rows={6}
           value={content}
           onChange={(e) => setContent(e.target.value)}
+          style={{ width: "100%", marginBottom: 12 }}
         />
 
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
@@ -51,4 +58,5 @@ const modal = {
   background: "white",
   padding: 20,
   width: 500,
+  borderRadius: 6,
 };
