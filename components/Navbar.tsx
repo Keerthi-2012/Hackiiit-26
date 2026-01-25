@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Dashboard as DashboardIcon,
@@ -141,9 +141,37 @@ const navItems = [
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+    useEffect(() => {
+  const forceHome = () => {
+    window.location.replace("/");
+  };
+
+  // 1️⃣ BFCache restore (best effort)
+  const onPageShow = (e) => {
+    if (e.persisted) {
+      forceHome();
+    }
+  };
+
+  // 2️⃣ Visibility change (Chrome/Safari fallback)
+  const onVisibilityChange = () => {
+    if (document.visibilityState === "visible") {
+      // If user is visible again AFTER logout → kick out
+      forceHome();
+    }
+  };
+
+  window.addEventListener("pageshow", onPageShow);
+  document.addEventListener("visibilitychange", onVisibilityChange);
+
+  return () => {
+    window.removeEventListener("pageshow", onPageShow);
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+  };
+}, []);
 
 const handleLogout = () => {
-  window.location.href = "/api/auth/logout";
+window.location.replace("/api/auth/logout");
 };
 
 

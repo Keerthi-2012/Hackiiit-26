@@ -17,18 +17,18 @@ interface TokenPayload extends JwtPayload {
 }
 
 export default async function HomePage() {
-  const cookieStore = await cookies();
+  const cookieStore = cookies();
   const token = cookieStore.get("token")?.value;
 
   /* =========================
-     AUTH CHECK (UNCHANGED)
+     AUTH CHECK (CORRECT)
   ========================= */
   if (token) {
     try {
       jwt.verify(token, process.env.JWT_SECRET as string) as TokenPayload;
       redirect("/dashboard");
     } catch {
-      // invalid token → continue to landing page
+      // invalid token → show landing page
     }
   }
 

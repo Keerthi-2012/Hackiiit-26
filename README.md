@@ -1,36 +1,123 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Research Discuss
 
-## Getting Started
+## Problem Statement
 
-First, run the development server:
+Research students and faculty often rely on fragmented communication channels such as emails, messaging applications, and informal forums to discuss technical questions, share resources, and identify recurring conceptual doubts. This results in:
 
+- Repeated questions without a structured knowledge base  
+- Loss of valuable discussions over time  
+- Difficulty in discovering relevant prior discussions or related work  
+- Absence of a centralized, research-oriented discussion platform  
+
+The objective of this project is to build a **centralized research discussion platform** that supports structured queries, collaborative discussion, and the gradual evolution of frequently asked research questions into a curated FAQ system.
+
+---
+
+## Solution Approach
+
+**Research Discuss** is a web-based platform designed specifically for academic and research-oriented discussions.
+
+The key design principles are:
+
+- **Query-first design**: Users post clearly defined research queries with descriptions and tags  
+- **Structured discussions**: Each query has a dedicated discussion page with threaded replies and attachments  
+- **FAQ evolution**: Repeated or frequently occurring queries are automatically tracked and promoted as FAQ candidates  
+- **Tag-based discovery**: Queries and blogs are organized using research-domain tags  
+- **Separation of concerns**: Blogs, queries, FAQs, and user profiles are distinct but interconnected  
+
+The system balances open discussion with long-term knowledge consolidation, making it suitable for a research-focused academic environment.
+
+---
+
+## Tech Stack Used
+
+### Frontend
+- Next.js (App Router)
+- React
+- TypeScript
+- Material UI (MUI)
+- CSS Modules
+
+### Backend
+- Next.js API Routes
+- Node.js
+- MongoDB
+- Mongoose
+
+### Authentication
+- JSON Web Tokens (JWT)
+- Cookie-based authentication
+
+---
+
+## Key Features
+
+- Posting and browsing research queries  
+- Tag-based filtering (e.g., Machine Learning, Systems, VLSI, Theory)  
+- Threaded discussions on each query  
+- File attachments for queries  
+- Blog system with preview and full-content modal  
+- FAQ system generated from repeated queries  
+- User profiles with “My Queries” and “My Blogs”  
+- Delete functionality for user-owned queries  
+- Anonymous posting option  
+- Fully responsive design for desktop and mobile devices  
+
+---
+
+## Instructions to Run the Code
+
+### 1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/your-username/research-discuss.git
+cd research-discuss
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
+```bash
+npm install
+```
+### 3. Create environment variables
+```bash
+MONGODB_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
+### 4. Run the development server
+```bash
+npm run dev
+```
+### 5. Open in a browser
+```bash
+http://localhost:3000
+```
+## Previous Work / References
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Conceptual inspiration from:
+  - Stack Overflow (question–answer structure)
+  - Academic and research discussion forums
+- No existing open-source project was directly forked or used as a base
+- UI components were implemented using Material UI
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## AI Tool Usage Disclosure
 
-To learn more about Next.js, take a look at the following resources:
+AI tools were used responsibly during development:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **ChatGPT**
+  - Code debugging and refactoring assistance
+  - UI/UX improvement suggestions
+  - README drafting and documentation structuring
+  - Error diagnosis and explanation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+All AI-generated outputs were reviewed, modified, and manually integrated.  
+No AI-generated code was used without verification or understanding.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Security and Privacy Notice
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- No `.env` files or API keys are committed to the repository
+- No secrets or credentials are exposed
+- All sensitive configuration is managed through environment variables
