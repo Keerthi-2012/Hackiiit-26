@@ -24,7 +24,23 @@ import {
 import QueryCard from "./QueryCard";
 import AddQueryModal from "@/components/dashboard/AddQueryModal";
 
-const TAGS = ["All", "Systems", "ML", "Theory", "VLSI", "Networks"];
+const TAGS = [
+  "Machine Learning",
+  "Systems",
+  "VLSI",
+  "Theory",
+  "Computer Vision",
+  "NLP",
+  "Databases",
+  "Networks",
+  "Security",
+  "Distributed Systems",
+  "Algorithms",
+  "Optimization",
+  "Robotics",
+  "HCI",
+  "Bioinformatics",
+];
 
 export default function Dashboard() {
   const [queries, setQueries] = useState<any[]>([]);
