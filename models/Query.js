@@ -1,5 +1,6 @@
 import FileSchema from "../models/File"
 import mongoose from "mongoose";
+import "@/models/User";  
 
 const QuerySchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
