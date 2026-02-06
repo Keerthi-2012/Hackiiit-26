@@ -6,7 +6,10 @@ export function middleware(req) {
   // Public routes
   const publicPaths = [
     "/",
+    "/login",
+    "/signup",
     "/api/auth/login",
+    "/api/auth/signup",
     "/api/auth/logout",
   ];
 
@@ -16,7 +19,7 @@ export function middleware(req) {
 
   // 🔐 Protect everything else
   if (!token) {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();

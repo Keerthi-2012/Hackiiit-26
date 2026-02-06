@@ -107,7 +107,7 @@ export default async function HomePage() {
                 </Typography>
 
                 <Button
-                  href="/api/auth/login"
+                  href="/signup"
                   component="a"
                   startIcon={<LoginIcon />}
                   className="cta"

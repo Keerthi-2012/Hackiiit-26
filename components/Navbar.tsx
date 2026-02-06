@@ -107,43 +107,39 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
-  // ❌ Do not show Navbar on landing page
-  if (pathname === "/") return null;
-
-  /* ===========================
-     BACK BUTTON (BFCache FIX)
-  =========================== */
   useEffect(() => {
     const onPageShow = (e: PageTransitionEvent) => {
-  if (e.persisted) {
-    window.location.replace("/");
-  }
-};
-
+      if (e.persisted) {
+        window.location.replace("/");
+      }
+    };
     window.addEventListener("pageshow", onPageShow);
     return () => window.removeEventListener("pageshow", onPageShow);
   }, []);
 
-  /* ===========================
-     CROSS-TAB LOGOUT SYNC
-  =========================== */
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key === "logout") {
         window.location.replace("/");
       }
     };
-
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  const handleLogout = () => {
+  // ❌ Do not show Navbar on landing, login, or signup page
+  if (pathname === "/" || pathname === "/login" || pathname === "/signup")
+    return null;
+
+  const handleLogout = async () => {
     // 🔔 notify ALL tabs
     localStorage.setItem("logout", Date.now().toString());
 
     // 🔐 server logout
-    window.location.replace("/api/auth/logout");
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {}
+    window.location.replace("/login");
   };
 
   return (
