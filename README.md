@@ -28,6 +28,10 @@ The key design principles are:
 The system balances open discussion with long-term knowledge consolidation, making it suitable for a research-focused academic environment.
 
 ---
+## Deployed website:
+```bash
+hackiiit-26.vercel.app
+```
 
 ## Tech Stack Used
 
@@ -94,10 +98,7 @@ npm run dev
 http://localhost:3000
 ```
 
-## Deployed website:
-```bash
-hackiiit-26.vercel.app
-```
+
 
 ## Security and Privacy Notice
 
