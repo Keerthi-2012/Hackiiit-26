@@ -7,7 +7,7 @@ import User from "@/models/User"
 import Reply from "@/models/Reply"
 import path from "path";  // <-- ADD THIS
 import fs from "fs";      // <-- ADD THIS
-
+import "@/models/User";
 /* =========================
    🔐 Extract userId from JWT
 ========================= */

@@ -3,7 +3,7 @@ import connectToDatabase from "@/lib/mongodb";
 import Query from "@/models/Query";
 import Reply from "@/models/Reply";
 import mongoose from "mongoose";
-
+import "@/models/User";
 export async function GET(request) {
   await connectToDatabase();
 
