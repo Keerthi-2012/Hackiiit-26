@@ -114,11 +114,11 @@ export default function Navbar() {
      BACK BUTTON (BFCache FIX)
   =========================== */
   useEffect(() => {
-    const onPageShow = (e) => {
-      if (e.persisted) {
-        window.location.replace("/");
-      }
-    };
+    const onPageShow = (e: PageTransitionEvent) => {
+  if (e.persisted) {
+    window.location.replace("/");
+  }
+};
 
     window.addEventListener("pageshow", onPageShow);
     return () => window.removeEventListener("pageshow", onPageShow);
@@ -128,7 +128,7 @@ export default function Navbar() {
      CROSS-TAB LOGOUT SYNC
   =========================== */
   useEffect(() => {
-    const onStorage = (e) => {
+    const onStorage = (e: StorageEvent) => {
       if (e.key === "logout") {
         window.location.replace("/");
       }

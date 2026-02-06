@@ -320,7 +320,7 @@ export default function ProfilePage() {
 ========================= */
 function StatCard({ label, value, icon }: any) {
   return (
-    <Grid item xs={12} sm={6} md={4}>
+    <Grid size={{ xs: 12, sm: 6, md: 4 }}>
       <div className="card">
         <div>{icon}</div>
         <div className="stat-value">{value}</div>
@@ -348,7 +348,7 @@ function InfoRow({ icon, label, value }: any) {
 
 function Action({ icon, label, onClick }: any) {
   return (
-    <Grid item xs={12} sm={6} md={3}>
+    <Grid size={{ xs: 12, sm: 6, md: 3 }}>
       <Button
         fullWidth
         startIcon={icon}

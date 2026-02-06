@@ -49,13 +49,18 @@ function BlogReadModal({
   blog: Blog;
   onClose: () => void;
 }) {
-  const date = new Date(blog.createdAt);
+const date = blog.createdAt ? new Date(blog.createdAt) : null;
 
-  const formattedDate = date.toLocaleDateString();
-  const formattedTime = date.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+const formattedDate = date
+  ? date.toLocaleDateString()
+  : "Unknown date";
+
+const formattedTime = date
+  ? date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  : "";
 
   return (
     <Dialog open onClose={onClose} maxWidth="md" fullWidth className="modal">
@@ -219,7 +224,7 @@ export default function BlogsPage() {
           {blogs.map((blog) => {
             const isLiked = likedBlogs.has(blog._id);
             return (
-              <Grid item xs={12} sm={6} md={4} key={blog._id}>
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={blog._id}>
                 <Card className="card">
                   <CardContent>
                     {blog.category && (

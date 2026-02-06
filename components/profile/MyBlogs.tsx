@@ -485,7 +485,8 @@ function BlogReadModal({
   blog: Blog;
   onClose: () => void;
 }) {
-  const date = new Date(blog.createdAt);
+const date = blog.createdAt ? new Date(blog.createdAt) : null;
+
 
   return (
     <Dialog open onClose={onClose} maxWidth="md" fullWidth className="modal">
@@ -496,7 +497,7 @@ function BlogReadModal({
       <DialogContent dividers className="modal-content">
         <Stack spacing={2}>
           <Typography className="text-muted">
-            {blog.author || "Anonymous"} • {date.toDateString()} •{" "}
+            {blog.author || "Anonymous"} • {date ? date.toDateString() : "Unknown date"} •{" "}
             {blog.readTime || 3} min read
           </Typography>
 
@@ -648,7 +649,8 @@ export default function MyBlogs() {
 
         <Grid container spacing={3}>
           {blogs.map((blog) => (
-            <Grid item xs={12} sm={6} md={4} key={blog._id}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={blog._id}>
+
               <Card className="card">
                 <CardContent>
                   {blog.category && (

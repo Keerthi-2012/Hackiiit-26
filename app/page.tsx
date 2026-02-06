@@ -93,7 +93,7 @@ export default async function HomePage() {
       <Box className="page">
         <Container maxWidth="lg">
           <Grid container spacing={6} alignItems="center">
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Stack spacing={3}>
                 <Typography className="hero-title">
                   Collaborate, Learn <span>& Innovate</span>
