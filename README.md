@@ -83,8 +83,6 @@ npm install @mui/material@latest @mui/system@latest @emotion/react @emotion/styl
 MONGODB_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
-CAS_BASE_URL=https://login.iiit.ac.in/cas
-CAS_SERVICE_URL=http://localhost:3000/api/auth/callback
 NEXT_PUBLIC_CAS_BASE_URL=https://login.iiit.ac.in/cas
 ```
 ### 4. Run the development server
@@ -95,30 +93,11 @@ npm run dev
 ```bash
 http://localhost:3000
 ```
-## Previous Work / References
 
-- Conceptual inspiration from:
-  - Stack Overflow (question–answer structure)
-  - Academic and research discussion forums
-- No existing open-source project was directly forked or used as a base
-- UI components were implemented using CSS and Material UI
-
----
-
-## AI Tool Usage Disclosure
-
-AI tools were used responsibly during development:
-
-- **ChatGPT**
-  - Code debugging and refactoring assistance
-  - UI/UX improvement suggestions
-  - README drafting and documentation structuring
-  - Error diagnosis and explanation
-
-All AI-generated outputs were reviewed, modified, and manually integrated.  
-No AI-generated code was used without verification or understanding.
-
----
+## Deployed website:
+```bash
+hackiiit-26.vercel.app
+```
 
 ## Security and Privacy Notice
 
