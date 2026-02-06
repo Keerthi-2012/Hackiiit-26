@@ -170,7 +170,7 @@ input:-webkit-autofill:focus {
                 onChange={(e) => setPassword(e.target.value)}
                 fullWidth
                 required
-                InputLabelProps={{ style: { color: "#e5e7eb" } }}
+                InputLabelProps={{ shrink: true, style: { color: "#e5e7eb" } }}
                 InputProps={{
                   style: { color: "#e5e7eb" },
                   endAdornment: (

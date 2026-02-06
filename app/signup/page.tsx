@@ -70,74 +70,75 @@ export default function SignupPage() {
   return (
     <>
       <style>{`
-body {
-  min-height: 100vh;
-  background:
-    radial-gradient(1200px circle at 50% -25%, rgba(56,189,248,0.16), transparent 45%),
-    linear-gradient(180deg, #020617, #020b2d);
-  color: #e5e7eb;
-  font-family: Inter, system-ui, -apple-system;
-}
+        body {
+          background: radial-gradient(circle at top, #0f1b4a, #0f172a);
+          color: #e5e7eb;
+        }
+        .signup-card {
+          background: #111827;
+          border: 1px solid #1f2933;
+          border-radius: 14px;
+          box-shadow: 0 10px 30px rgba(102,126,234,0.15);
+          padding: 40px 32px;
+          margin-top: 64px;
+        }
+        .signup-title {
+          font-weight: 700;
+          background: linear-gradient(135deg, #22d3ee, #38bdf8);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        }
+        .signup-link {
+          color: #22d3ee !important;
+          text-decoration: none;
+          font-weight: 700;
+          transition: color 0.2s;
+        }
+        .signup-link:hover {
+          color: #38bdf8 !important;
+        }
 
-.signup-card {
-  background: rgba(17, 24, 39, 0.92);
-  backdrop-filter: blur(18px);
-  border: 1px solid rgba(148, 163, 184, 0.15);
-  border-radius: 20px;
-  padding: 44px 36px;
-  margin-top: 72px;
-  box-shadow: 0 40px 90px rgba(2,6,23,0.85);
-}
+        .MuiOutlinedInput-root {
+          background: rgba(2,6,23,0.6);
+          border-radius: 14px;
+        }
 
-.signup-title {
-  font-size: 2.3rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #22d3ee, #38bdf8);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+        .MuiOutlinedInput-notchedOutline {
+          border-color: rgba(148,163,184,0.25);
+        }
 
-.MuiOutlinedInput-root {
-  background: rgba(2,6,23,0.6);
-  border-radius: 14px;
-}
+        .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+          border-color: #38bdf8;
+          box-shadow: 0 0 0 3px rgba(56,189,248,0.18);
+        }
 
-.MuiOutlinedInput-notchedOutline {
-  border-color: rgba(148,163,184,0.25);
-}
+        .MuiInputBase-input {
+          color: #e5e7eb;
+          padding: 18px 16px 14px;
+        }
 
-.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #38bdf8;
-  box-shadow: 0 0 0 3px rgba(56,189,248,0.18);
-}
+        /* ===== AUTOFILL FIX (SIGNUP) ===== */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:focus,
+        select:-webkit-autofill {
 
-.MuiInputBase-input {
-  color: #e5e7eb;
-  padding: 18px 16px 14px;
-}
+          /* Force correct text color */
+          -webkit-text-fill-color: #e5e7eb !important;
+          caret-color: #e5e7eb;
 
-/* ===== AUTOFILL FIX (SIGNUP) ===== */
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:focus,
-select:-webkit-autofill {
+          /* Override Chrome grey/yellow autofill bg */
+          -webkit-box-shadow: 0 0 0 1000px rgba(2, 6, 23, 0.6) inset !important;
+          box-shadow: 0 0 0 1000px rgba(2, 6, 23, 0.6) inset !important;
 
-  /* Force correct text color */
-  -webkit-text-fill-color: #e5e7eb !important;
-  caret-color: #e5e7eb;
+          /* Prevent flash */
+          transition: background-color 9999s ease-in-out 0s;
 
-  /* Override Chrome grey/yellow autofill bg */
-  -webkit-box-shadow: 0 0 0 1000px rgba(2, 6, 23, 0.6) inset !important;
-  box-shadow: 0 0 0 1000px rgba(2, 6, 23, 0.6) inset !important;
-
-  /* Prevent flash */
-  transition: background-color 9999s ease-in-out 0s;
-
-  border-radius: 14px;
-}
-`}</style>
+          border-radius: 14px;
+        }
+      `}</style>
 
       <Container maxWidth="sm">
         <Box className="signup-card">
@@ -165,7 +166,7 @@ select:-webkit-autofill {
                 onChange={handleChange}
                 fullWidth
                 required
-                InputLabelProps={{ style: { color: "#e5e7eb" } }}
+                InputLabelProps={{ shrink: true, style: { color: "#e5e7eb" } }}
                 InputProps={{ style: { color: "#e5e7eb" } }}
               />
 
@@ -177,7 +178,7 @@ select:-webkit-autofill {
                 onChange={handleChange}
                 fullWidth
                 required
-                InputLabelProps={{ style: { color: "#e5e7eb" } }}
+                InputLabelProps={{shrink: true,  style: { color: "#e5e7eb" } }}
                 InputProps={{ style: { color: "#e5e7eb" } }}
               />
 
@@ -190,7 +191,7 @@ select:-webkit-autofill {
                 fullWidth
                 required
                 helperText="At least 6 characters"
-                InputLabelProps={{ style: { color: "#e5e7eb" } }}
+                InputLabelProps={{ shrink: true, style: { color: "#e5e7eb" } }}
                 InputProps={{
                   style: { color: "#e5e7eb" },
                   endAdornment: (
@@ -219,7 +220,7 @@ select:-webkit-autofill {
                 onChange={handleChange}
                 fullWidth
                 required
-                InputLabelProps={{ style: { color: "#e5e7eb" } }}
+                InputLabelProps={{ shrink: true, style: { color: "#e5e7eb" } }}
                 InputProps={{
                   style: { color: "#e5e7eb" },
                   endAdornment: (
@@ -247,7 +248,7 @@ select:-webkit-autofill {
                 value={formData.researchArea}
                 onChange={handleChange}
                 fullWidth
-                InputLabelProps={{ style: { color: "#e5e7eb" } }}
+                InputLabelProps={{ shrink: true, style: { color: "#e5e7eb" } }}
                 InputProps={{ style: { color: "#e5e7eb" } }}
               />
 
@@ -258,7 +259,7 @@ select:-webkit-autofill {
                 value={formData.lab}
                 onChange={handleChange}
                 fullWidth
-                InputLabelProps={{ style: { color: "#e5e7eb" } }}
+                InputLabelProps={{ shrink: true, style: { color: "#e5e7eb" } }}
                 InputProps={{ style: { color: "#e5e7eb" } }}
               />
 
